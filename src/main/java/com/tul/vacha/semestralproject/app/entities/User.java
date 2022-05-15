@@ -2,10 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.tul.vacha.semestralproject.entities;
-
-import com.tul.vacha.semestralproject.utils.AuthUtils;
-import java.security.NoSuchAlgorithmException;
+package com.tul.vacha.semestralproject.app.entities;
 
 /**
  *
@@ -19,14 +16,6 @@ public class User {
     private String password;
     private boolean isAdmin;
 
-    public String getHash(String password) {
-        try {
-            return AuthUtils.getHash(password);
-        } catch (NoSuchAlgorithmException e) {
-            return null;
-        }
-    }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -39,7 +28,7 @@ public class User {
         this.isAdmin = isAdmin;
     }
 
-    public boolean getIsAdmin(boolean isAdmin) {
+    public boolean getIsAdmin() {
         return this.isAdmin;
     }
 

@@ -4,7 +4,7 @@
  */
 package com.tul.vacha.semestralproject.app.repositories.user;
 
-import com.tul.vacha.semestralproject.entities.User;
+import com.tul.vacha.semestralproject.app.entities.User;
 import java.sql.SQLException;
 
 /**

@@ -22,23 +22,11 @@ public final class InputUtils {
     private static final Locale LOCALE = new Locale("cs", "CZ");
     private static Scanner sc;
 
-    private static void setScanner(Scanner sc) {
-        InputUtils.sc = sc;
-        InputUtils.sc.useLocale(LOCALE);
+    // Fakové clearování pro účely IDEčka
+    public static void clearConsole() {
+        System.out.println("\n".repeat(20));
     }
-
-    // Když se InputUtils incializují
-    static {
-        resync();
-    }
-
-    /**
-     * Když se změní InputUtils, udělat znovu inicialici
-     */
-    private static void resync() {
-        setScanner(new Scanner(new java.io.BufferedInputStream(System.in), CHARSET_NAME));
-    }
-
+    
     public static boolean hasNextLine() {
         return sc.hasNextLine();
     }
@@ -88,4 +76,20 @@ public final class InputUtils {
 
     }
 
+    // Když se InputUtils incializují
+    static {
+        resync();
+    }
+
+    /**
+     * Když se změní InputUtils, udělat znovu inicialici
+     */
+    private static void resync() {
+        setScanner(new Scanner(new java.io.BufferedInputStream(System.in), CHARSET_NAME));
+    }
+
+    private static void setScanner(Scanner sc) {
+        InputUtils.sc = sc;
+        InputUtils.sc.useLocale(LOCALE);
+    }
 }

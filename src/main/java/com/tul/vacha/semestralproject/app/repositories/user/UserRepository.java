@@ -4,13 +4,11 @@
  */
 package com.tul.vacha.semestralproject.app.repositories.user;
 
-import com.tul.vacha.semestralproject.entities.User;
+import com.tul.vacha.semestralproject.app.entities.User;
 import com.tul.vacha.semestralproject.utils.dbutils.Database;
 import com.tul.vacha.semestralproject.utils.dbutils.ResultSetPropertiesSimplifyHelps;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
 
 /**
  *
@@ -20,8 +18,8 @@ public class UserRepository implements IUserRepository {
 
     private final Database db;
 
-    public UserRepository(Database db) {
-        this.db = db;
+    public UserRepository() throws SQLException {
+        this.db = Database.getInstance();
     }
 
     @Override
@@ -31,21 +29,18 @@ public class UserRepository implements IUserRepository {
         if (users.isEmpty()) {
             return null;
         }
-        // Promyslet implementaci
-        /*if (users.isEmpty()) {
-            throw new NoSuchElementException("Nemohli jsme najit žádného uživatele s tímto id");
-        }*/
+
         return users.get(0);
     }
 
     @Override
     public User getUserByUsername(String username) throws SQLException {
-        ArrayList<User> users = ResultSetPropertiesSimplifyHelps.putResult(db.query("SELECT * FROM users WHERE id = ?", new Object[]{username}), User.class);
+        ArrayList<User> users = ResultSetPropertiesSimplifyHelps.putResult(db.query("SELECT * FROM users WHERE username = ?", new Object[]{username}), User.class);
 
         if (users.isEmpty()) {
             return null;
         }
-      
+
         return users.get(0);
     }
 

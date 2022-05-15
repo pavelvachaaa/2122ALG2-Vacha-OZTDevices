@@ -16,30 +16,44 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A Connection Pool with 5 Available Connections *
- */
 public class Database {
 
     private final List<Connection> availableConnections = new ArrayList<>();
     private final List<Connection> usedConnections = new ArrayList<>();
-    private final int MAX_CONNECTIONS = 5;
+    private final static int MAX_CONNECTIONS = 5;
 
-    private final String URL;
-    private final String USERID;
-    private final String PASSWORD;
+    private final String url;
+    private final String user;
+    private final String pass;
+
+    private static Database instance = null;
+
+    public static Database getInstance(String Url, String UserId, String password) throws SQLException {
+        if (instance == null) {
+            instance = new Database(Url, UserId, password);
+        }
+
+        return instance;
+    }
+
+    public static Database getInstance() throws SQLException {
+        if (instance == null) {
+            throw new IllegalStateException("Databáze nebyla inicializována.");
+        }
+
+        return instance;
+    }
 
     // TODO: Změnit implementaci. přidávat spojení do poolu postupně a pak je odstraňovat
     // Max connection třeba 10 - ale přidávat je dynamicky, ne hned na začátku
-    public Database(String Url, String UserId, String password) throws SQLException {
-        this.URL = Url;
-        this.USERID = UserId;
-        this.PASSWORD = password;
+    private Database(String Url, String UserId, String password) throws SQLException {
+        this.url = Url;
+        this.user = UserId;
+        this.pass = password;
 
         for (int count = 0; count < MAX_CONNECTIONS; count++) {
             availableConnections.add(this.createConnection());
         }
-
     }
 
     /**
@@ -49,7 +63,7 @@ public class Database {
      * @throws SQLException
      */
     private Connection createConnection() throws SQLException {
-        return DriverManager.getConnection(this.URL, this.USERID, this.PASSWORD);
+        return DriverManager.getConnection(this.url, this.user, this.pass);
     }
 
     /**
@@ -84,17 +98,17 @@ public class Database {
         return false;
     }
 
- 
     public int getFreeConnectionCount() {
         return availableConnections.size();
     }
 
     /**
      * Vrací data na základě query
+     *
      * @param query - SQL dotaz
      * @param params - paramerty pro prepared statements
      * @return resultset when success, otherwise throws error
-     * @throws SQLException 
+     * @throws SQLException
      */
     public ResultSet query(String query, Object[] params) throws SQLException {
         Connection conn = this.getConnection();
