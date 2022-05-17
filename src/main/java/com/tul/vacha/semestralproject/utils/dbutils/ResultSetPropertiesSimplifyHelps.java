@@ -40,24 +40,25 @@ public class ResultSetPropertiesSimplifyHelps {
              * Get total columns
              */
             int count = metaData.getColumnCount();
-            
+
             while (rs.next()) {
                 /**
                  * Create an object instance
                  */
                 T newInstance = obj.newInstance();
                 for (int i = 1; i <= count; i++) {
-                    /**
-                     * Assign a value to an attribute of an object
-                     */
-                    String name = metaData.getColumnName(i).toLowerCase();
+                    // ÚPRAVA KNIHOVNY - ZDE TO NEBRALO ALIASY - POSLAT MU PULL REQUEST
+                    String name = metaData.getColumnLabel(i);
                     name = toJavaField(name);// Change column name format to java Naming format
                     String substring = name.substring(0, 1);// title case
                     String replace = name.replaceFirst(substring, substring.toUpperCase());
+
                     Class<?> type = null;
                     try {
                         type = obj.getDeclaredField(name).getType();// Get field type
-                    } catch (NoSuchFieldException e) { // Class When the field is not defined by the object,skip
+                    } catch (NoSuchFieldException e) {
+                       // System.out.println("No such element");
+                       // System.out.println(name);
                         continue;
                     }
 
@@ -82,7 +83,7 @@ public class ResultSetPropertiesSimplifyHelps {
                     } else if (type.isAssignableFrom(BigDecimal.class)) {
                         method.invoke(newInstance, rs.getBigDecimal(i));
                     } else if (type.isAssignableFrom(boolean.class) || type.isAssignableFrom(Boolean.class)) {
-                        method.invoke(newInstance, rs.getBoolean(i));// boolean Data type represents one bit of information
+                        method.invoke(newInstance, rs.getInt(i) >= 1);// boolean Data type represents one bit of information
                     } else if (type.isAssignableFrom(Date.class)) {
                         method.invoke(newInstance, rs.getDate(i));
                     }

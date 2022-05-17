@@ -10,13 +10,14 @@ import com.tul.vacha.semestralproject.app.core.View;
  *
  * @author pvacha
  */
-public class HomeView extends View {
+public class MedicalMainMenuView extends View {
 
     @Override
     public void display() {
-        System.out.println("Co se to děje");
-        int x = 3;
 
+        System.out.println("1. Zobrazit seznam");
+        System.out.println("2. Přidat položku");
+        System.out.println("3. Zpět");
     }
 
 }

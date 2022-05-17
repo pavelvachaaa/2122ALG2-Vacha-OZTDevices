@@ -36,6 +36,7 @@ public class Database {
         return instance;
     }
 
+    // Asi to ošetřit rovnou tedy, pak je to bolest všude jinde ošetřit
     public static Database getInstance() throws SQLException {
         if (instance == null) {
             throw new IllegalStateException("Databáze nebyla inicializována.");
@@ -100,6 +101,31 @@ public class Database {
 
     public int getFreeConnectionCount() {
         return availableConnections.size();
+    }
+
+    /**
+     * Když upravujeme data, tak se nevrací resultset ale int
+     *
+     * @param query
+     * @param params
+     * @return int - how many rows were affected
+     * @throws SQLException
+     */
+    public int queryExec(String query, Object[] params) throws SQLException {
+        Connection conn = this.getConnection();
+        PreparedStatement ps = conn.prepareStatement(query);
+
+        if (params != null) {
+            int index = 1;
+            for (Object param : params) {
+                ps.setObject(index, param);
+                index++;
+            }
+        }
+
+        this.releaseConnection(conn);
+        return ps.executeUpdate();
+
     }
 
     /**

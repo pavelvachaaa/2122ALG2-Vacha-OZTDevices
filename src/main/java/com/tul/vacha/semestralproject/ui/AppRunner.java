@@ -4,14 +4,16 @@
  */
 package com.tul.vacha.semestralproject.ui;
 
-import com.tul.vacha.semestralproject.app.App;
-import com.tul.vacha.semestralproject.app.AuthService;
-import com.tul.vacha.semestralproject.app.View;
-import com.tul.vacha.semestralproject.app.repositories.user.UserRepository;
+import com.tul.vacha.semestralproject.app.core.App;
+import com.tul.vacha.semestralproject.app.services.AuthService;
+import com.tul.vacha.semestralproject.app.core.View;
+import com.tul.vacha.semestralproject.app.repositories.implementation.UserRepository;
 import com.tul.vacha.semestralproject.ui.views.HomeView;
 import com.tul.vacha.semestralproject.ui.views.LoginView;
 import com.tul.vacha.semestralproject.ui.views.MainMenuView;
 import com.tul.vacha.semestralproject.ui.views.MedicalItemListView;
+import com.tul.vacha.semestralproject.ui.views.ProfileView;
+import com.tul.vacha.semestralproject.ui.views.UsersListView;
 import com.tul.vacha.semestralproject.ui.views.WelcomeMenuView;
 import com.tul.vacha.semestralproject.utils.dbutils.Database;
 import java.io.IOException;
@@ -31,19 +33,23 @@ public class AppRunner {
 
     public static void main(String[] args) {
         init();
-
+        
+        //TODO: Při ukončení aplikace ukončit db spojení !!!!okú
+    
         String defaultRoute = "/welcomeMenu";
 
-        Map<String, View> routes = Map.of(
-                "/login", new LoginView(),
+        Map<String, View> routes = Map.of("/login", new LoginView(),
                 "/home", new HomeView(),
                 "/medicalItemList", new MedicalItemListView(),
                 "/mainMenu", new MainMenuView(),
-                "/welcomeMenu", new WelcomeMenuView()
+                "/welcomeMenu", new WelcomeMenuView(),
+                "/users/list", new UsersListView(),
+                "/profile", new ProfileView()
         );
 
         App app = new ConsoleApp(defaultRoute, routes);
-        // App app = new WebApp();    // App app = new GUIApp();F
+        // App app = new WebApp();   
+        // App app = new GUIApp();
 
         app.start();
 

@@ -4,10 +4,120 @@
  */
 package com.tul.vacha.semestralproject.app.entities;
 
+import java.sql.Date;
+
 /**
  *
  * @author pvacha
  */
 public class MedicalDevice {
-    
+
+    private int id;
+
+    private String internalRegistrationNumber;
+    private String name;
+    private boolean isElectric;
+    private Date warrantyTo;
+    private Date expirationDate;
+    private String deviceType;
+    private String mobility;
+    private String cpvDeviceType;
+    private String description;
+
+    public MedicalDevice() {
+    }
+
+    public MedicalDevice(int id, String internalRegistrationNumber, String name, boolean isElectric, Date warrantyTo, Date expirationDate, String deviceType, String mobility, String cpvDeviceType, String description) {
+        this.id = id;
+        this.internalRegistrationNumber = internalRegistrationNumber;
+        this.name = name;
+        this.isElectric = isElectric;
+        this.warrantyTo = warrantyTo;
+        this.expirationDate = expirationDate;
+        this.deviceType = deviceType;
+        this.mobility = mobility;
+        this.cpvDeviceType = cpvDeviceType;
+        this.description = description;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setInternalRegistrationNumber(String internalRegistrationNumber) {
+        this.internalRegistrationNumber = internalRegistrationNumber;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIsElectric(boolean isElectric) {
+        this.isElectric = isElectric;
+    }
+
+    public void setWarrantyTo(Date warrantyTo) {
+        this.warrantyTo = warrantyTo;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
+
+    public void setMobility(String mobility) {
+        this.mobility = mobility;
+    }
+
+    public void setCpvDeviceType(String cpvDeviceType) {
+        this.cpvDeviceType = cpvDeviceType;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getInternalRegistrationNumber() {
+        return internalRegistrationNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isIsElectric() {
+        return isElectric;
+    }
+
+    public Date getWarrantyTo() {
+        return warrantyTo;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public String getMobility() {
+        return mobility;
+    }
+
+    public String getCpvDeviceType() {
+        return cpvDeviceType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
 }

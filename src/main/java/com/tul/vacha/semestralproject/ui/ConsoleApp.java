@@ -4,20 +4,9 @@
  */
 package com.tul.vacha.semestralproject.ui;
 
-import com.tul.vacha.semestralproject.app.App;
-import com.tul.vacha.semestralproject.app.AuthService;
-import com.tul.vacha.semestralproject.app.Navigator;
-import com.tul.vacha.semestralproject.app.View;
-
-import com.tul.vacha.semestralproject.app.repositories.user.UserRepository;
-import com.tul.vacha.semestralproject.ui.views.WelcomeMenuView;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import com.tul.vacha.semestralproject.utils.dbutils.Database;
-
-import java.sql.SQLException;
+import com.tul.vacha.semestralproject.app.core.App;
+import com.tul.vacha.semestralproject.app.core.Navigator;
+import com.tul.vacha.semestralproject.app.core.View;
 import java.util.Map;
 
 /**

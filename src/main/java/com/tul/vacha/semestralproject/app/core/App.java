@@ -2,14 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.tul.vacha.semestralproject.app;
+package com.tul.vacha.semestralproject.app.core;
 
-import com.tul.vacha.semestralproject.app.View;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
  * Vymyslet kam to umístit
+ *
  * @author pvacha
  */
 public abstract class App {

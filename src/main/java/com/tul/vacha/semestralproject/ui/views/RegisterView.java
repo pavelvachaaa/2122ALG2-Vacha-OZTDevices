@@ -4,34 +4,40 @@
  */
 package com.tul.vacha.semestralproject.ui.views;
 
-import com.tul.vacha.semestralproject.app.services.AuthService;
 import com.tul.vacha.semestralproject.app.core.Navigator;
-import com.tul.vacha.semestralproject.app.dto.UserLoginDTO;
 import com.tul.vacha.semestralproject.app.core.View;
+import com.tul.vacha.semestralproject.app.dto.UserLoginDTO;
+import com.tul.vacha.semestralproject.app.dto.UserRegisterDTO;
+import com.tul.vacha.semestralproject.app.services.AuthService;
 import com.tul.vacha.semestralproject.utils.InputUtils;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author pvacha
  */
-public class LoginView extends View {
+public class RegisterView extends View {
 
     private final AuthService authService = AuthService.getInstance();
 
     @Override
     public void display() {
-        this.login(this.askForCredentials());
+        register(this.askForCredentials());
     }
 
-    private UserLoginDTO askForCredentials() {
+    private UserRegisterDTO askForCredentials() {
         String username = "";
         String password = "";
-
+        String name = "";
         boolean end = false;
 
         while (!end && username.isBlank() && password.isBlank()) {
             try {
+                System.out.println("Zadejte vaše celé jméno: ");
+                name = InputUtils.readLine();
 
                 System.out.println("Zadejte vaše uživ. jméno: ");
                 username = InputUtils.readString();
@@ -45,16 +51,16 @@ public class LoginView extends View {
             }
         }
 
-        return new UserLoginDTO(username, password);
+        return new UserRegisterDTO(name, username, password);
 
     }
 
-    private void login(UserLoginDTO loginDTO) {
+    private void register(UserRegisterDTO registerDTO) {
 
         try {
-            if (authService.login(loginDTO)) {
+            if (authService.register(registerDTO)) {
                 InputUtils.clearConsole();
-                this.showMessage("Úspěšně jsme vás přihlásili!");
+                this.showMessage("Úspěšně jsme vás registrovali!");
                 Navigator.pushNamed("/mainMenu");
             } else {
                 InputUtils.clearConsole();
@@ -68,8 +74,13 @@ public class LoginView extends View {
             System.out.println("Někde nastala chyba. Opakujte váš pokus!");
 
             display();
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("Nepodporovaný algoritmus");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Uživatel s tímto heslem již existuje.");
+            // Repeat until asi???
+            // Nebo clearnout a displayout znova register
         }
 
     }
-
 }

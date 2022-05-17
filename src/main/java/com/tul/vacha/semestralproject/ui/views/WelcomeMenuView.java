@@ -4,8 +4,8 @@
  */
 package com.tul.vacha.semestralproject.ui.views;
 
-import com.tul.vacha.semestralproject.app.Navigator;
-import com.tul.vacha.semestralproject.app.View;
+import com.tul.vacha.semestralproject.app.core.Navigator;
+import com.tul.vacha.semestralproject.app.core.View;
 import com.tul.vacha.semestralproject.utils.InputUtils;
 
 /**

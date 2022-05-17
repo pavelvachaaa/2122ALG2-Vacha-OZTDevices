@@ -24,7 +24,7 @@ public final class InputUtils {
 
     // Fakové clearování pro účely IDEčka
     public static void clearConsole() {
-        System.out.println("\n".repeat(20));
+        System.out.println("\n".repeat(10));
     }
     
     public static boolean hasNextLine() {

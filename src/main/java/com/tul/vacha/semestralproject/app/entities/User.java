@@ -16,6 +16,23 @@ public class User {
     private String password;
     private boolean isAdmin;
 
+    public User(int id, String name, String username, String password, boolean isAdmin) {
+        this.id = id;
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.isAdmin = isAdmin;
+    }
+    // Asi by stálo udělat něco jako UserDTO a pak konverzi mezi nimi
+    // Není vhodné, že i když dělám kopii, tak můžu použít settery
+    public User(User user) {
+        this.id = user.id;
+        this.name = user.name;
+        this.username = user.username;
+        this.password = user.password;
+        this.isAdmin = user.isAdmin;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
