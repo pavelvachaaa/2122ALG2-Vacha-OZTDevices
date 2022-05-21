@@ -56,9 +56,10 @@ public class ResultSetPropertiesSimplifyHelps {
                     Class<?> type = null;
                     try {
                         type = obj.getDeclaredField(name).getType();// Get field type
+                        //System.out.println(name);
                     } catch (NoSuchFieldException e) {
-                       // System.out.println("No such element");
-                       // System.out.println(name);
+                        //System.out.println("No such element");
+                        //System.out.println(name);
                         continue;
                     }
 

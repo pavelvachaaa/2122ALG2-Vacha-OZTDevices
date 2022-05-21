@@ -2,9 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.tul.vacha.semestralproject.app.core;
+package com.tul.vacha.semestralproject.app.core.navigation;
 
-import com.tul.vacha.semestralproject.utils.InputUtils;
+import com.tul.vacha.semestralproject.app.core.App;
+import com.tul.vacha.semestralproject.app.core.View;
+import com.tul.vacha.semestralproject.utils.IOUtils;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
@@ -28,6 +30,10 @@ public final class Navigator {
         }
     }
 
+    public static boolean canPop() {
+        return stack.size() > 1;
+    }
+
     public static void pushReplacementNamed(String route) {
         stack.clear();
         pushNamed(route);
@@ -45,7 +51,7 @@ public final class Navigator {
 
     public static void pop() {
         // Možná to hodit příznakově
-        InputUtils.clearConsole();
+        IOUtils.clearConsole();
 
         if (!stack.isEmpty()) {
             stack.pop();

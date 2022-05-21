@@ -4,9 +4,14 @@
  */
 package com.tul.vacha.semestralproject.ui.views;
 
-import com.tul.vacha.semestralproject.app.core.Navigator;
+import com.tul.vacha.semestralproject.app.core.navigation.Navigator;
 import com.tul.vacha.semestralproject.app.core.View;
-import com.tul.vacha.semestralproject.utils.InputUtils;
+import com.tul.vacha.semestralproject.app.core.navigation.Menu;
+import com.tul.vacha.semestralproject.app.core.navigation.MenuItem;
+import com.tul.vacha.semestralproject.app.services.AuthService;
+import com.tul.vacha.semestralproject.utils.IOUtils;
+import com.tul.vacha.semestralproject.utils.MenuUtils;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,33 +19,25 @@ import com.tul.vacha.semestralproject.utils.InputUtils;
  */
 public class MainMenuView extends View {
 
+    private final AuthService authService = AuthService.getInstance();
+    private final ArrayList<MenuItem> menuItems = new ArrayList<>() {
+        {
+            add(new MenuItem("Seznam zařízení", (d) -> Navigator.pushNamed("/medicalItemList")));
+            add(new MenuItem("Profil", (d) -> Navigator.pushNamed("/profile")));
+            add(new MenuItem("Kalendář", (d) -> Navigator.pushNamed("/inspectionCaledar")));
+            add(new MenuItem("Seznam uživatelů", (d) -> Navigator.pushNamed("/users/list")));
+            add(new MenuItem("Odhlásit se", (d) -> {
+                authService.logout();
+                Navigator.pushNamed("/welcomeMenu");
+            }));
+        }
+    };
+
+    private final Menu menu = new Menu(menuItems);
+
     @Override
     public void display() {
-        System.out.println("1. Seznam zařízení");
-        System.out.println("2. Profil");
-
-        // Check if admin 
-        System.out.println("87. Administrace uživatelů");
-
-        System.out.println("3. Kalendář");
-        System.out.println("4. Odhlásit se");
-
-        int choice = InputUtils.readInt();
-
-        switch (choice) {
-            case 1 ->
-                Navigator.pushNamed("/medicalItemList");
-            case 2 -> 
-                Navigator.pushNamed("/profile");
-            case 87 ->
-                 Navigator.pushNamed("/users/list");
-                
-            case 4 -> // +Logout
-                Navigator.pushNamed("/login");
-            default -> {
-            }
-        }
-
+        MenuUtils.askForCommand(menu);
     }
 
 }

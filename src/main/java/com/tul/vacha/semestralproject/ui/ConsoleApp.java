@@ -5,7 +5,7 @@
 package com.tul.vacha.semestralproject.ui;
 
 import com.tul.vacha.semestralproject.app.core.App;
-import com.tul.vacha.semestralproject.app.core.Navigator;
+import com.tul.vacha.semestralproject.app.core.navigation.Navigator;
 import com.tul.vacha.semestralproject.app.core.View;
 import java.util.Map;
 

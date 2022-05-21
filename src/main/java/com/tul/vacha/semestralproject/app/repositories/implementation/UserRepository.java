@@ -74,14 +74,14 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public boolean changePassword(UserChangePasswordDTO user) throws SQLException, NoSuchAlgorithmException {
-        int result = db.queryExec("UPDATE users SET password = ? WHERE id = ? ", new Object[]{AuthUtils.getHash(user.getPassword()), user.getId()});
+        long result = db.queryExec("UPDATE users SET password = ? WHERE id = ? ", new Object[]{AuthUtils.getHash(user.getPassword()), user.getId()});
         // +Výjimka atd...
         return result >= 1;
     }
 
     @Override
     public boolean registerUser(UserRegisterDTO user) throws SQLException, NoSuchAlgorithmException {
-        int result = db.queryExec("INSERT INTO users (name, username, password) VALUES (?,?,?)", new Object[]{user.getName(), user.getUsername(), AuthUtils.getHash(user.getPassword())});
+        long result = db.queryExec("INSERT INTO users (name, username, password) VALUES (?,?,?)", new Object[]{user.getName(), user.getUsername(), AuthUtils.getHash(user.getPassword())});
         // +Výjimky atd...
         return result >= 1;
     }

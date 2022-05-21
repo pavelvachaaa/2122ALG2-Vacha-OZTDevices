@@ -10,6 +10,9 @@ import com.tul.vacha.semestralproject.app.repositories.implementation.UserReposi
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+// TODO: Command smazat
+// TODO: Command add
+// TODO: Fancy výpis
 /**
  *
  * @author pvacha

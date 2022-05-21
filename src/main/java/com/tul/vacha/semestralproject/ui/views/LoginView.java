@@ -5,10 +5,10 @@
 package com.tul.vacha.semestralproject.ui.views;
 
 import com.tul.vacha.semestralproject.app.services.AuthService;
-import com.tul.vacha.semestralproject.app.core.Navigator;
+import com.tul.vacha.semestralproject.app.core.navigation.Navigator;
 import com.tul.vacha.semestralproject.app.dto.UserLoginDTO;
 import com.tul.vacha.semestralproject.app.core.View;
-import com.tul.vacha.semestralproject.utils.InputUtils;
+import com.tul.vacha.semestralproject.utils.IOUtils;
 import java.sql.SQLException;
 
 /**
@@ -34,13 +34,13 @@ public class LoginView extends View {
             try {
 
                 System.out.println("Zadejte vaše uživ. jméno: ");
-                username = InputUtils.readString();
+                username = IOUtils.readString();
 
                 System.out.println("Zadejte vaše heslo: ");
-                password = InputUtils.readString();
+                password = IOUtils.readString();
 
             } catch (Exception e) {
-                InputUtils.clearConsole();
+                IOUtils.clearConsole();
                 System.out.println("Neplatný vstup. Zkuste to znovu!");
             }
         }
@@ -53,18 +53,18 @@ public class LoginView extends View {
 
         try {
             if (authService.login(loginDTO)) {
-                InputUtils.clearConsole();
+                IOUtils.clearConsole();
                 this.showMessage("Úspěšně jsme vás přihlásili!");
                 Navigator.pushNamed("/mainMenu");
             } else {
-                InputUtils.clearConsole();
+                IOUtils.clearConsole();
                 this.showMessage("Chybně zadané údaje, šéfe!");
 
                 display();
             }
         } catch (SQLException e) {
 
-            InputUtils.clearConsole();
+            IOUtils.clearConsole();
             System.out.println("Někde nastala chyba. Opakujte váš pokus!");
 
             display();

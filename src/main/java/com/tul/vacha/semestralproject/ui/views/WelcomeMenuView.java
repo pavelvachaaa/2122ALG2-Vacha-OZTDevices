@@ -4,9 +4,13 @@
  */
 package com.tul.vacha.semestralproject.ui.views;
 
-import com.tul.vacha.semestralproject.app.core.Navigator;
+import com.tul.vacha.semestralproject.app.core.navigation.Navigator;
 import com.tul.vacha.semestralproject.app.core.View;
-import com.tul.vacha.semestralproject.utils.InputUtils;
+import com.tul.vacha.semestralproject.app.core.navigation.Menu;
+import com.tul.vacha.semestralproject.app.core.navigation.MenuItem;
+import com.tul.vacha.semestralproject.utils.IOUtils;
+import com.tul.vacha.semestralproject.utils.MenuUtils;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,25 +18,19 @@ import com.tul.vacha.semestralproject.utils.InputUtils;
  */
 public class WelcomeMenuView extends View {
 
+    private final ArrayList<MenuItem> menuItems = new ArrayList<>() {
+        {
+            add(new MenuItem("Přihlásit se", (d) -> Navigator.pushNamed("/login")));
+            add(new MenuItem("Registrovat se", (d) -> Navigator.pushNamed("/register")));
+            add(new MenuItem("Ukončit aplikaci", (d) -> System.exit(0)));
+        }
+    };
+
+    private final Menu menu = new Menu(menuItems);
+
     @Override
     public void display() {
-        System.out.println("1. Přihlásit se");
-        System.out.println("2. Registrovat se");
-        System.out.println("3. Ukončit aplikaci");
-
-        int choice = InputUtils.readInt();
-
-        switch (choice) {
-            case 1 ->
-                Navigator.pushNamed("/login");
-            case 2 -> // +Logout
-                Navigator.pushNamed("/register");
-            case 3 -> // +Logout
-                System.exit(0);
-            default ->
-                System.out.println("Znova plsky");
-
-        }
+        MenuUtils.askForCommand(menu);
     }
 
 }

@@ -4,6 +4,7 @@
  */
 package com.tul.vacha.semestralproject.app.repositories.interfaces;
 
+import com.tul.vacha.semestralproject.app.dto.MedicalItemAddDTO;
 import com.tul.vacha.semestralproject.app.enums.CodeList;
 import com.tul.vacha.semestralproject.app.entities.CodeListItem;
 import com.tul.vacha.semestralproject.app.entities.MedicalDevice;
@@ -20,6 +21,10 @@ public interface IMedicalDeviceRepository {
 
     List<CodeListItem> getCodeList(CodeList codeListType) throws SQLException;
 
-    boolean deleteDevice(int id) throws SQLException;
+    MedicalDevice getDevice(int id) throws SQLException;
+
+    int deleteDevice(int id) throws SQLException;
+
+    int addDevice(MedicalItemAddDTO data) throws SQLException;
 
 }

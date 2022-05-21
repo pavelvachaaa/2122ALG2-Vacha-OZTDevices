@@ -11,7 +11,8 @@ package com.tul.vacha.semestralproject.app.enums;
 public enum CodeList {
     MOBILITY("ozt_device_mobility"),
     DEVICE_TYPE("ozt_device_type"),
-    CPV_DEVICE_TYPE("ozt_device_cpvType");
+    CPV_DEVICE_TYPE("ozt_device_cpvType"),
+    INSPECTION_TYPE("ozt_inspection");
 
     private final String label;
 

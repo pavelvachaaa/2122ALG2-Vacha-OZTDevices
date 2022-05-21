@@ -4,17 +4,14 @@
  */
 package com.tul.vacha.semestralproject.ui.views;
 
-import com.tul.vacha.semestralproject.app.core.Navigator;
+import com.tul.vacha.semestralproject.app.core.navigation.Navigator;
 import com.tul.vacha.semestralproject.app.core.View;
-import com.tul.vacha.semestralproject.app.dto.UserLoginDTO;
 import com.tul.vacha.semestralproject.app.dto.UserRegisterDTO;
 import com.tul.vacha.semestralproject.app.services.AuthService;
-import com.tul.vacha.semestralproject.utils.InputUtils;
+import com.tul.vacha.semestralproject.utils.IOUtils;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+   
 /**
  *
  * @author pvacha
@@ -37,16 +34,16 @@ public class RegisterView extends View {
         while (!end && username.isBlank() && password.isBlank()) {
             try {
                 System.out.println("Zadejte vaše celé jméno: ");
-                name = InputUtils.readLine();
+                name = IOUtils.readLine();
 
                 System.out.println("Zadejte vaše uživ. jméno: ");
-                username = InputUtils.readString();
+                username = IOUtils.readString();
 
                 System.out.println("Zadejte vaše heslo: ");
-                password = InputUtils.readString();
+                password = IOUtils.readString();
 
             } catch (Exception e) {
-                InputUtils.clearConsole();
+                IOUtils.clearConsole();
                 System.out.println("Neplatný vstup. Zkuste to znovu!");
             }
         }
@@ -59,18 +56,18 @@ public class RegisterView extends View {
 
         try {
             if (authService.register(registerDTO)) {
-                InputUtils.clearConsole();
+                IOUtils.clearConsole();
                 this.showMessage("Úspěšně jsme vás registrovali!");
                 Navigator.pushNamed("/mainMenu");
             } else {
-                InputUtils.clearConsole();
+                IOUtils.clearConsole();
                 this.showMessage("Chybně zadané údaje, šéfe!");
 
                 display();
             }
         } catch (SQLException e) {
 
-            InputUtils.clearConsole();
+            IOUtils.clearConsole();
             System.out.println("Někde nastala chyba. Opakujte váš pokus!");
 
             display();

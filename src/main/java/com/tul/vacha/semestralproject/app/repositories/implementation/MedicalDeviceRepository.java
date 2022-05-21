@@ -4,17 +4,20 @@
  */
 package com.tul.vacha.semestralproject.app.repositories.implementation;
 
+import com.tul.vacha.semestralproject.app.dto.MedicalItemAddDTO;
 import com.tul.vacha.semestralproject.app.repositories.interfaces.IMedicalDeviceRepository;
 import com.tul.vacha.semestralproject.app.enums.CodeList;
 import com.tul.vacha.semestralproject.app.entities.CodeListItem;
 import com.tul.vacha.semestralproject.app.entities.MedicalDevice;
 import com.tul.vacha.semestralproject.app.entities.User;
+import com.tul.vacha.semestralproject.utils.AuthUtils;
 import com.tul.vacha.semestralproject.utils.dbutils.Database;
 import com.tul.vacha.semestralproject.utils.dbutils.ResultSetPropertiesSimplifyHelps;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  *
@@ -38,7 +41,7 @@ public class MedicalDeviceRepository implements IMedicalDeviceRepository {
     @Override
     public List<MedicalDevice> getAll() throws SQLException {
 
-        ArrayList<MedicalDevice> devices = ResultSetPropertiesSimplifyHelps.putResult(db.query("SELECT ozt_device_item.id, internalRegistrationNumber,name,isElectric,isDeleted,expirationDate,warrantyTo,ozt_device_cpvType.code as cpvDeviceType, ozt_device_type.code as deviceType , description, (ozt_device_mobility.label) as mobility FROM `ozt_device_item` INNER JOIN ozt_device_type ON ozt_device_type.id = ozt_device_item.mobility INNER JOIN ozt_device_mobility ON ozt_device_mobility.id = mobility INNER JOIN ozt_device_cpvType ON ozt_device_cpvType.id = cpvDeviceType"), MedicalDevice.class);
+        ArrayList<MedicalDevice> devices = ResultSetPropertiesSimplifyHelps.putResult(db.query("SELECT ozt_device_item.id, internalRegistrationNumber,name,isElectric,isDeleted,expirationDate,warrantyTo,ozt_device_cpvType.label as cpvDeviceType, ozt_device_type.code as deviceType , description, (ozt_device_mobility.label) as mobility FROM `ozt_device_item` INNER JOIN ozt_device_type ON ozt_device_type.id = ozt_device_item.mobility INNER JOIN ozt_device_mobility ON ozt_device_mobility.id = mobility INNER JOIN ozt_device_cpvType ON ozt_device_cpvType.id = cpvDeviceType"), MedicalDevice.class);
 
         //HANDLE stuff - errors
         return devices;
@@ -56,8 +59,25 @@ public class MedicalDeviceRepository implements IMedicalDeviceRepository {
     }
 
     @Override
-    public boolean deleteDevice(int id) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public int deleteDevice(int id) throws SQLException {
+        return db.queryExec("DELETE FROM ozt_device_item WHERE id = ?", new Object[]{id});
+    }
+
+    @Override
+    public MedicalDevice getDevice(int id) throws SQLException {
+        ArrayList<MedicalDevice> device = ResultSetPropertiesSimplifyHelps.putResult(db.query("SELECT ozt_device_item.id, internalRegistrationNumber,name,isElectric,isDeleted,expirationDate,warrantyTo,ozt_device_cpvType.code as cpvDeviceType, ozt_device_type.code as deviceType , description, (ozt_device_mobility.label) as mobility FROM `ozt_device_item` INNER JOIN ozt_device_type ON ozt_device_type.id = ozt_device_item.mobility INNER JOIN ozt_device_mobility ON ozt_device_mobility.id = mobility INNER JOIN ozt_device_cpvType ON ozt_device_cpvType.id = cpvDeviceType WHERE ozt_device_item.id = ?", new Object[]{(int)id}), MedicalDevice.class);
+
+        if (device.isEmpty()) {
+            throw new NoSuchElementException("Takové zařízení jsme nenašli");
+        }
+
+        return device.get(0);
+
+    }
+
+    @Override
+    public int addDevice(MedicalItemAddDTO data) throws SQLException {
+        return db.queryExec("INSERT INTO ozt_device_item (name, internalRegistrationNumber,isElectric, warrantyTo, expirationDate,deviceType, mobility, cpvDeviceType) VALUES (?,?,?,?,?,?,?,?)", new Object[]{data.getName(), data.getInternalRegistrationNumber(), data.isIsElectric(), data.getWarrantyTo(), data.getExpirationDate(), data.getDeviceType(), data.getMobility(), data.getCpvDeviceType()});
     }
 
 }

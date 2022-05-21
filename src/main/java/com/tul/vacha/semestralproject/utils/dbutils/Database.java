@@ -13,6 +13,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,7 +114,7 @@ public class Database {
      */
     public int queryExec(String query, Object[] params) throws SQLException {
         Connection conn = this.getConnection();
-        PreparedStatement ps = conn.prepareStatement(query);
+        PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
         if (params != null) {
             int index = 1;
@@ -122,9 +123,19 @@ public class Database {
                 index++;
             }
         }
+        ps.executeUpdate();
+        try ( ResultSet generatedKeys = ps.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
 
-        this.releaseConnection(conn);
-        return ps.executeUpdate();
+                this.releaseConnection(conn);
+                return generatedKeys.getInt(1);
+            } else if (query.contains("DELETE") || query.contains("UPDATE") ) {
+                return 1;
+            } else {
+                throw new SQLException("Chyba");
+
+            }
+        }
 
     }
 
@@ -152,6 +163,10 @@ public class Database {
         ResultSet rs = ps.executeQuery();
 
         return rs;
+    }
+
+    public int queryExec(String query) throws SQLException {
+        return this.queryExec(query, new Object[]{});
     }
 
     public ResultSet query(String query) throws SQLException {

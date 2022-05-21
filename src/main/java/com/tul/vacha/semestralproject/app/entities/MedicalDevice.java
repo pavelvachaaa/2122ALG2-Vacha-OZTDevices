@@ -4,7 +4,9 @@
  */
 package com.tul.vacha.semestralproject.app.entities;
 
-import java.sql.Date;
+import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 /**
  *
@@ -118,6 +120,18 @@ public class MedicalDevice {
 
     public String getDescription() {
         return description;
+    }
+
+    public LocalDate getLocalDate(Date date) {
+        Date d = new java.util.Date();
+        d.setTime(date.getTime()); // Java je retardovaná a nemůžu použít na Date toInstant, když je to SQL DATE :)
+        return d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%-5s %-20s %-50s %-10s\n", this.id, this.internalRegistrationNumber, this.name, this.cpvDeviceType);
+
     }
 
 }
