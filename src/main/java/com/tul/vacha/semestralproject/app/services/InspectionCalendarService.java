@@ -5,22 +5,22 @@
 package com.tul.vacha.semestralproject.app.services;
 
 import com.tul.vacha.semestralproject.app.core.InspectionCalendar;
-import com.tul.vacha.semestralproject.app.core.navigation.Navigator;
 import com.tul.vacha.semestralproject.app.dto.InspectionAddDTO;
 import com.tul.vacha.semestralproject.app.entities.Inspection;
 import com.tul.vacha.semestralproject.app.enums.WeekDays;
 import com.tul.vacha.semestralproject.app.repositories.implementation.InspectionRepository;
-import com.tul.vacha.semestralproject.ui.views.InspectionDetailView;
+import com.tul.vacha.semestralproject.utils.IOUtils;
+import com.tul.vacha.semestralproject.utils.exceptions.ErrorLinesException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -45,29 +45,6 @@ public class InspectionCalendarService {
 
     }
 
-    /*private void createMap() {
-        LocalDate localDate;
-        int month, year, day;
-        for (Inspection inspection : inspections) {
-            localDate = inspection.getInspectionDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-            month = localDate.getMonthValue();
-            year = localDate.getYear();
-            day = localDate.getDayOfMonth();
-            month
-            if (inspectionMap.containsKey(year)) {
-                if (inspectionMap.get(year).containsKey(month)) {
-                    inspectionMap.get(year).get(month).add(day);
-                } else {
-                    inspectionMap.keySet(year);
-                    
-                }
-            } else {
-                inspectionMap.
-            }
-        }
-
-    }*/
     public int getYear() {
         return cal.getYear();
     }
@@ -80,34 +57,16 @@ public class InspectionCalendarService {
         return cal.getDay();
     }
 
-    public boolean execute(String command) {
-        if ("next".equals(command)) {
-            cal.nextMonth();
-            return true;
-        }
-        if ("previous".equals(command)) {
-            cal.previousMonth();
-            return true;
-        }
+    public void nextMonth() {
+        this.cal.nextMonth();
+    }
 
-        if ("today".equals(command)) {
-            cal.today();
-            return true;
-        }
+    public void previousMonth() {
+        this.cal.previousMonth();
+    }
 
-        if ("help".equals(command)) {
-            System.out.println("Dostupné příkazy: next,previous,today,back,help, show");
-            return true;
-        }
-        if ("back".equals(command)) {
-            Navigator.pop();
-            return true;
-        }
-        if (command.startsWith("show")) {
-            return showCommand(command);
-        }
-
-        return true;
+    public void today() {
+        this.cal.today();
     }
 
     public boolean removeFromList(int id) {
@@ -116,27 +75,22 @@ public class InspectionCalendarService {
         });
     }
 
-    private boolean showCommand(String command) {
+    public Inspection showCommand(String command) {
         command = command.replaceAll("\\s+", " ");
         String[] tokens = command.split(" ");
         if (tokens.length > 1 && !tokens[1].isBlank()) {
-            try {
-                // Omezení na jednu inspekci na jeden den - mimo rozsah této práce už..
+            // Omezení na jednu inspekci na jeden den - mimo rozsah této práce už..
+            Inspection insp;
+            insp = inspections.stream().filter((ins) -> {
+                return ins.getLocalDate().getDayOfMonth() == Integer.parseInt(tokens[1]) && this.cal.getMonth().getMonthNumber() == ins.getLocalDate().getMonthValue();
+            }).findFirst().orElseThrow();
 
-                Inspection insp;
-                insp = inspections.stream().filter((ins) -> {
-                    return ins.getLocalDate().getDayOfMonth() == Integer.parseInt(tokens[1]) && this.cal.getMonth().getMonthNumber() == ins.getLocalDate().getMonthValue();
-                }).findFirst().orElseThrow();
-                Navigator.push(new InspectionDetailView(insp, this)); // Catch parsing error
-                return false;
-            } catch (NoSuchElementException e) {
-                System.out.println(e.getMessage());
-                return false;
-            } // Parsing error ještě
+            return insp;
 
+        } else {
+            throw new IllegalArgumentException("Neplatný argument");
         }
 
-        return false;
     }
 
     private String getHeaderOfMonth() {
@@ -189,13 +143,48 @@ public class InspectionCalendarService {
         return sb.toString();
     }
 
-    public String displayMonth() {
+    public String getCalendarString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getHeaderOfMonth());
         sb.append(System.getProperty("line.separator"));
         sb.append(this.getBodyOfCalendar());
         //sb.append(System.getProperty("line.separator"));
         return sb.toString();
+    }
+
+    public void addInspectionsFromFile(String filename) throws IOException {
+        File dataDirectory = new File(System.getProperty("user.dir") + File.separator + "data");
+        File data = new File(dataDirectory, filename);
+        List<Integer> errorLines = new ArrayList<>();
+
+        try ( BufferedReader br = new BufferedReader(new FileReader(data))) {
+            String line;
+            String[] parts;
+            InspectionAddDTO insp;
+            br.readLine(); //preskoceni hlavicky
+            int lineNumber = 2;
+
+            while ((line = br.readLine()) != null) {
+                parts = line.split("[ ]+");
+                try {
+                    insp = new InspectionAddDTO(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), parts[2], IOUtils.getInDateFormat().parse(parts[3]));
+
+                    // Jsem si plně vědom, že to není efektivní a, že bych měl
+                    // udělat jeden velký sql string sanitiznout a pak až executnout.
+                    this.addInspection(repo.addInspection(insp));
+                } catch (ParseException | SQLException ex) {
+                    errorLines.add(lineNumber);
+                }
+
+            }
+
+            br.close();
+        }
+
+        if (!errorLines.isEmpty()) {
+            throw new ErrorLinesException("Nebyla načtena data na řádcích: " + errorLines.toString());
+        }
+
     }
 
     public boolean addInspection(int id) throws SQLException {

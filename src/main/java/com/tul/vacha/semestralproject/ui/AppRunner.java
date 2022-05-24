@@ -6,13 +6,11 @@ package com.tul.vacha.semestralproject.ui;
 
 import com.tul.vacha.semestralproject.app.core.App;
 import com.tul.vacha.semestralproject.app.core.View;
-import com.tul.vacha.semestralproject.ui.views.HomeView;
 import com.tul.vacha.semestralproject.ui.views.InspectionCalendarView;
 import com.tul.vacha.semestralproject.ui.views.LoginView;
 import com.tul.vacha.semestralproject.ui.views.MainMenuView;
 import com.tul.vacha.semestralproject.ui.views.MedicalItemListView;
 import com.tul.vacha.semestralproject.ui.views.ProfileView;
-import com.tul.vacha.semestralproject.ui.views.UsersListView;
 import com.tul.vacha.semestralproject.ui.views.WelcomeMenuView;
 import com.tul.vacha.semestralproject.utils.dbutils.Database;
 
@@ -31,18 +29,14 @@ public class AppRunner {
     public static void main(String[] args) {
         init();
 
-        //TODO: Při ukončení aplikace ukončit db spojení !!!!okú
-        String defaultRoute = "/inspectionCaledar";
-        defaultRoute = "/welcomeMenu";
+        String defaultRoute = "/welcomeMenu";
 
         // TODO: Chtělo by to nějaký router a ne to inicializovat zde - asi
         // + líbila by se mi runtime inicializace, jaksi na to nemám kapacitu
         Map<String, View> routes = Map.of("/login", new LoginView(),
-                "/home", new HomeView(),
                 "/medicalItemList", new MedicalItemListView(),
                 "/mainMenu", new MainMenuView(),
                 "/welcomeMenu", new WelcomeMenuView(),
-                "/users/list", new UsersListView(),
                 "/profile", new ProfileView(),
                 "/inspectionCaledar", new InspectionCalendarView()
         );

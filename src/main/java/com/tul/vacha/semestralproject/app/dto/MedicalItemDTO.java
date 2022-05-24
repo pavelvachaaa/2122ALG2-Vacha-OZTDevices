@@ -22,6 +22,11 @@ public class MedicalItemDTO {
         this.inspections = inspections;
     }
 
+    public MedicalItemDTO(MedicalItemDTO dto) {
+        this.device = new MedicalDevice(dto.getDevice());
+        this.inspections = new ArrayList<>(dto.inspections);
+    }
+
     public MedicalDevice getDevice() {
         return device;
     }

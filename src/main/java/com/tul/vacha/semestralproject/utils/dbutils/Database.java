@@ -16,12 +16,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 public class Database {
 
     private final List<Connection> availableConnections = new ArrayList<>();
     private final List<Connection> usedConnections = new ArrayList<>();
-    private final static int MAX_CONNECTIONS = 5;
+    private final static int MAX_CONNECTIONS = 10;
 
     private final String url;
     private final String user;
@@ -46,16 +49,13 @@ public class Database {
         return instance;
     }
 
-    // TODO: Změnit implementaci. přidávat spojení do poolu postupně a pak je odstraňovat
-    // Max connection třeba 10 - ale přidávat je dynamicky, ne hned na začátku
     private Database(String Url, String UserId, String password) throws SQLException {
         this.url = Url;
         this.user = UserId;
         this.pass = password;
 
-        for (int count = 0; count < MAX_CONNECTIONS; count++) {
-            availableConnections.add(this.createConnection());
-        }
+        // Přidáme jedno jediný do začátku, pak přidáváme dynamicky
+        availableConnections.add(this.createConnection());
     }
 
     /**
@@ -69,13 +69,22 @@ public class Database {
     }
 
     /**
-     * Vrací spojení, které je volné z poolu
+     * Vytváří spojení podle potřeby
      *
      * @return connection if there is any
      */
     public Connection getConnection() {
-        if (this.availableConnections.isEmpty()) {
-            System.out.println("All connections are Used !!");
+        if (this.availableConnections.isEmpty() && usedConnections.size() < MAX_CONNECTIONS) {
+            try {
+                availableConnections.add(this.createConnection());
+            } catch (SQLException e) {
+                System.out.println("Nemohli jsme vytvořit spojení.");
+            }
+
+        }
+
+        if (this.availableConnections.isEmpty() && usedConnections.size() >= MAX_CONNECTIONS) {
+            System.out.println("Všechna spojení jsou vyčerpána");
             return null;
         }
 
@@ -129,7 +138,7 @@ public class Database {
 
                 this.releaseConnection(conn);
                 return generatedKeys.getInt(1);
-            } else if (query.contains("DELETE") || query.contains("UPDATE") ) {
+            } else if (query.contains("DELETE") || query.contains("UPDATE")) {
                 return 1;
             } else {
                 throw new SQLException("Chyba");
@@ -172,4 +181,31 @@ public class Database {
     public ResultSet query(String query) throws SQLException {
         return this.query(query, new Object[]{});
     }
+
+    /* public static void main(String[] args) {
+        try {
+            ResourceBundle props = ResourceBundle.getBundle("db", new Locale("cs", "CZ"));
+            Database db = Database.getInstance(props.getString("mysql.url"), props.getString("mysql.username"), props.getString("mysql.password"));
+            db.getConnection();
+            db.getConnection();
+            db.getConnection();
+            db.getConnection();
+            Connection conn = db.getConnection();
+            db.getConnection();
+            db.getConnection();
+            db.getConnection();
+            db.getConnection();
+            db.getConnection();
+            db.getConnection();
+            db.getConnection();
+            db.getConnection();
+
+        } catch (MissingResourceException e) {
+            System.out.println("Nemohli jsme najít údaje od DB. :(");
+            // TODO -> try again 
+        } catch (SQLException ex) {
+            System.out.println("Údaje od DB jsou špatné.");
+            // TODO -> try again 
+        }
+    }*/
 }

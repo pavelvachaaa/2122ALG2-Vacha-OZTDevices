@@ -29,6 +29,19 @@ public class MedicalDevice {
     public MedicalDevice() {
     }
 
+    public MedicalDevice(MedicalDevice d) {
+        this.id = d.id;
+        this.internalRegistrationNumber = d.internalRegistrationNumber;
+        this.name = d.name;
+        this.isElectric = d.isElectric;
+        this.warrantyTo = d.warrantyTo;
+        this.expirationDate = d.expirationDate;
+        this.deviceType = d.deviceType;
+        this.mobility = d.mobility;
+        this.cpvDeviceType = d.cpvDeviceType;
+        this.description = d.description;
+    }
+
     public MedicalDevice(int id, String internalRegistrationNumber, String name, boolean isElectric, Date warrantyTo, Date expirationDate, String deviceType, String mobility, String cpvDeviceType, String description) {
         this.id = id;
         this.internalRegistrationNumber = internalRegistrationNumber;

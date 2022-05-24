@@ -13,25 +13,19 @@ import com.tul.vacha.semestralproject.app.core.navigation.MenuItem;
 import com.tul.vacha.semestralproject.app.dto.MedicalItemAddDTO;
 import com.tul.vacha.semestralproject.app.entities.CodeListItem;
 import com.tul.vacha.semestralproject.app.entities.MedicalDevice;
-
 import com.tul.vacha.semestralproject.app.repositories.implementation.MedicalDeviceRepository;
 import com.tul.vacha.semestralproject.app.services.MedicalDeviceService;
 import com.tul.vacha.semestralproject.utils.CommonUtils;
 import com.tul.vacha.semestralproject.utils.IOUtils;
 import com.tul.vacha.semestralproject.utils.MenuUtils;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-// TODO: Seznam
-// TODO: Export, import, add, delete (add už udělat odsud.. nedělat další pohled)
-// TODO: show detail
+// TODO: Export, import
 /**
  *
  * @author pvacha
@@ -50,7 +44,7 @@ public class MedicalItemListView extends View {
                     addDevice();
                 } catch (SQLException ex) {
                 }
-            }));
+            }, true));
             add(new MenuItem("Zobrazit položku", "show", (command) -> {
                 try {
                     System.out.println(command.toString());
@@ -58,6 +52,7 @@ public class MedicalItemListView extends View {
 
                     Navigator.push(new MedicalItemDetailView(service.getDeviceDetail(id)));
                 } catch (SQLException ex) {
+
                 }
             }));
 
@@ -68,7 +63,10 @@ public class MedicalItemListView extends View {
                 } catch (SQLException ex) {
                 }
 
-            }));
+            }, true));
+
+            add(new MenuItem("Exportovat položky", "export", (command) -> exportData(),
+                    true));
         }
     };
 
@@ -80,11 +78,37 @@ public class MedicalItemListView extends View {
         try {
             devices = repo.getAll();
             displayItems();
-        } catch (SQLException e) {
-        }
 
-        // Asi doplnit readline if hasnextline
-        MenuUtils.askForCommand(menu);
+            while (true) {
+                MenuUtils.askForCommand(menu);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void exportData() {
+        while (true) {
+
+            System.out.println("Zadejte název souboru, do kterého chcete importovat:");
+            String filename = IOUtils.readLine();
+
+            try {
+                if (!filename.endsWith(".txt")) {
+                    filename += ".txt";
+                }
+
+                this.service.exportData(filename);
+                this.showMessage("Úspěšně jsme uložili soubor");
+                return;
+            } catch (IOException ex) {
+                this.showMessage("Nastala chyba při práci se soubory, zkuste to znovu");
+            } catch (SQLException ex) {
+                this.showMessage("Nemohli jsme načíst data k exportu");
+            }
+
+        }
     }
 
     private int parseCommandId(String command) throws SQLException {
@@ -94,7 +118,7 @@ public class MedicalItemListView extends View {
 
         if (tokens.length > 1) {
             if (!CommonUtils.idInList(Integer.parseInt(tokens[1]), MedicalDevice::getId, devices)) {
-                throw new NoSuchElementException("To je pěkná sračka");
+                throw new NoSuchElementException("Takový to item neexistuje");
             }
             return Integer.parseInt(tokens[1]);
         } else {
@@ -111,10 +135,10 @@ public class MedicalItemListView extends View {
         boolean res = this.service.delete(id);
 
         if (res) {
-            System.out.println("Úspšně jsme smazali předmět");
+            this.showMessage("Úspšně jsme smazali předmět");
             this.devices.removeIf(x -> x.getId() == id);
         } else {
-            System.out.println("Nepodařilo se nám smazat předmět. Zkuste to znovu");
+            this.showMessage("Nepodařilo se nám smazat předmět. Zkuste to znovu");
         }
 
         display();

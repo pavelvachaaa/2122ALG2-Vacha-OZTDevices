@@ -9,11 +9,8 @@ import com.tul.vacha.semestralproject.app.repositories.interfaces.IMedicalDevice
 import com.tul.vacha.semestralproject.app.enums.CodeList;
 import com.tul.vacha.semestralproject.app.entities.CodeListItem;
 import com.tul.vacha.semestralproject.app.entities.MedicalDevice;
-import com.tul.vacha.semestralproject.app.entities.User;
-import com.tul.vacha.semestralproject.utils.AuthUtils;
 import com.tul.vacha.semestralproject.utils.dbutils.Database;
 import com.tul.vacha.semestralproject.utils.dbutils.ResultSetPropertiesSimplifyHelps;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +40,6 @@ public class MedicalDeviceRepository implements IMedicalDeviceRepository {
 
         ArrayList<MedicalDevice> devices = ResultSetPropertiesSimplifyHelps.putResult(db.query("SELECT ozt_device_item.id, internalRegistrationNumber,name,isElectric,isDeleted,expirationDate,warrantyTo,ozt_device_cpvType.label as cpvDeviceType, ozt_device_type.code as deviceType , description, (ozt_device_mobility.label) as mobility FROM `ozt_device_item` INNER JOIN ozt_device_type ON ozt_device_type.id = ozt_device_item.mobility INNER JOIN ozt_device_mobility ON ozt_device_mobility.id = mobility INNER JOIN ozt_device_cpvType ON ozt_device_cpvType.id = cpvDeviceType"), MedicalDevice.class);
 
-        //HANDLE stuff - errors
         return devices;
 
     }
@@ -53,7 +49,6 @@ public class MedicalDeviceRepository implements IMedicalDeviceRepository {
         // Prepared statements na tabulku nefungují :((
         ArrayList<CodeListItem> items = ResultSetPropertiesSimplifyHelps.putResult(db.query(String.format("SELECT * FROM %s", codeListType.getLabel()), new Object[]{}), CodeListItem.class);
 
-        // Checky a tak...
         return items;
 
     }
@@ -65,7 +60,7 @@ public class MedicalDeviceRepository implements IMedicalDeviceRepository {
 
     @Override
     public MedicalDevice getDevice(int id) throws SQLException {
-        ArrayList<MedicalDevice> device = ResultSetPropertiesSimplifyHelps.putResult(db.query("SELECT ozt_device_item.id, internalRegistrationNumber,name,isElectric,isDeleted,expirationDate,warrantyTo,ozt_device_cpvType.code as cpvDeviceType, ozt_device_type.code as deviceType , description, (ozt_device_mobility.label) as mobility FROM `ozt_device_item` INNER JOIN ozt_device_type ON ozt_device_type.id = ozt_device_item.mobility INNER JOIN ozt_device_mobility ON ozt_device_mobility.id = mobility INNER JOIN ozt_device_cpvType ON ozt_device_cpvType.id = cpvDeviceType WHERE ozt_device_item.id = ?", new Object[]{(int)id}), MedicalDevice.class);
+        ArrayList<MedicalDevice> device = ResultSetPropertiesSimplifyHelps.putResult(db.query("SELECT ozt_device_item.id, internalRegistrationNumber,name,isElectric,isDeleted,expirationDate,warrantyTo,ozt_device_cpvType.code as cpvDeviceType, ozt_device_type.code as deviceType , description, (ozt_device_mobility.label) as mobility FROM `ozt_device_item` INNER JOIN ozt_device_type ON ozt_device_type.id = ozt_device_item.mobility INNER JOIN ozt_device_mobility ON ozt_device_mobility.id = mobility INNER JOIN ozt_device_cpvType ON ozt_device_cpvType.id = cpvDeviceType WHERE ozt_device_item.id = ?", new Object[]{(int) id}), MedicalDevice.class);
 
         if (device.isEmpty()) {
             throw new NoSuchElementException("Takové zařízení jsme nenašli");

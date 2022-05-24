@@ -57,8 +57,7 @@ public class InspectionRepository implements IInspectionRepository {
     public int addInspection(InspectionAddDTO data) throws SQLException {
 
         int id = db.queryExec("INSERT INTO ozt_device_inspection (idDevice, idInspection, supplier, inspectionDate) VALUES(?, ?, ?,?) ", new Object[]{data.getIdDevice(), data.getIdInspection(), data.getSupplier(), data.getInspectionDate()});
-        System.out.println("ID:");
-        System.out.println(id);
+
         return id;
     }
 

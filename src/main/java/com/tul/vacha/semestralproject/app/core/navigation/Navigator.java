@@ -61,11 +61,5 @@ public final class Navigator {
         }
     }
 
-    // Možná by byla kůl metoda, která by měla argument menu 
-    // a zeptala se na to, co chcete dělat
-    public static void execute(String command) {
-        if (command.toLowerCase().equals("back")) {
-            pop();
-        }
-    }
+   
 }

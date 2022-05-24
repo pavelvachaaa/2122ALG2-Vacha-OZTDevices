@@ -4,22 +4,28 @@
  */
 package com.tul.vacha.semestralproject.ui.views;
 
-import com.tul.vacha.semestralproject.app.core.InspectionCalendar;
 import com.tul.vacha.semestralproject.app.core.navigation.Navigator;
 import com.tul.vacha.semestralproject.app.core.View;
+import com.tul.vacha.semestralproject.app.core.navigation.Menu;
+import com.tul.vacha.semestralproject.app.core.navigation.MenuItem;
 import com.tul.vacha.semestralproject.app.dto.InspectionAddDTO;
 import com.tul.vacha.semestralproject.app.entities.CodeListItem;
+import com.tul.vacha.semestralproject.app.entities.Inspection;
 import com.tul.vacha.semestralproject.app.entities.MedicalDevice;
 import com.tul.vacha.semestralproject.app.enums.CodeList;
 import com.tul.vacha.semestralproject.app.services.InspectionCalendarService;
 import com.tul.vacha.semestralproject.app.services.InspectionService;
 import com.tul.vacha.semestralproject.app.services.MedicalDeviceService;
 import com.tul.vacha.semestralproject.utils.IOUtils;
+import com.tul.vacha.semestralproject.utils.MenuUtils;
+import com.tul.vacha.semestralproject.utils.exceptions.ErrorLinesException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.InputMismatchException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  *
@@ -31,38 +37,72 @@ public class InspectionCalendarView extends View {
     private final InspectionService inspService = new InspectionService();
     private final InspectionCalendarService service = new InspectionCalendarService();
 
+    private final ArrayList<MenuItem> menuItems = new ArrayList<>() {
+        {
+            add(new MenuItem("Následující měsíc", "next", (d) -> service.nextMonth()));
+            add(new MenuItem("Předcházející měsíc", "previous", (d) -> service.previousMonth()));
+            add(new MenuItem("Dnes", "today", (d) -> service.today()));
+            add(new MenuItem("Přidat položku", "add", (command) -> addCommand(command.toString()), true));
+            add(new MenuItem("Zobrazit položku", "show", (command) -> showCommand(command.toString())));
+            add(new MenuItem("Načíst ze souboru", "import", (command) -> addInspectionsFromFile(), true));
+        }
+    };
+
+    private final Menu menu = new Menu(menuItems, true, true);
+
     @Override
     public void display() {
-        IOUtils.clearConsole();
 
-        String choice = "";
-        boolean result = true;
+        while (true) {
+            IOUtils.clearConsole();
+            System.out.println(this.service.getCalendarString());
 
-        while (!choice.equals("q")) {
-            service.execute("help");
+            MenuUtils.askForCommand(menu);
 
-            if (result) {
-                System.out.println(service.displayMonth());
-                choice = IOUtils.readLine();
-            } else {
-                break;
-            }
+        }
+    }
 
-            if (choice.startsWith("add")) {
-                result = this.add(choice);
-            } else {
-                result = this.service.execute(choice);
+    private void addInspectionsFromFile() {
+        while (true) {
 
+            System.out.println("Zadejte název souboru, ve kterém jsou data");
+            String filename = IOUtils.readLine();
+
+            try {
+                if (!filename.endsWith(".txt")) {
+                    filename += ".txt";
+                }
+
+                this.service.addInspectionsFromFile(filename);
+                this.display();
+
+                return;
+            } catch (IOException ex) {
+                this.showMessage("Nastala chyba při práci se soubory, zkuste to znovu:");
+            } catch (Exception e) {
+                this.showMessage(e.getMessage());
+                return;
             }
 
         }
-        //}catch(IllegalArgumentException e){
-        //    System.out.println(e.getMessage());
-        //}
-
     }
 
-    public boolean add(String command) {
+    private void showCommand(String command) {
+
+        try {
+            System.out.println(command);
+            Inspection insp = service.showCommand(command);
+
+            Navigator.push(new InspectionDetailView(insp, service)); // Catch parsing error
+
+        } catch (NoSuchElementException ex) {
+            System.out.println("V tento den nic není...");
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Tak tohle naparsovat neumím");
+        }
+    }
+
+    public boolean addCommand(String command) {
         command = command.replaceAll("\\s+", " ");
         String[] tokens = command.split(" ");
 
@@ -74,6 +114,7 @@ public class InspectionCalendarView extends View {
             StringBuilder sb = new StringBuilder();
             List<MedicalDevice> list = medicalService.getAll();
 
+            IOUtils.clearConsole();
             for (MedicalDevice item : list) {
                 sb.append(String.format("%-5s %-20s %-50s %-10s\n", item.getId(), item.getInternalRegistrationNumber(), item.getName(), item.getCpvDeviceType()));
             }

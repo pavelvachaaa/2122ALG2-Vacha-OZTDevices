@@ -45,6 +45,10 @@ public final class IOUtils {
         return !sc.hasNext();
     }
 
+    public static SimpleDateFormat getInDateFormat() {
+        return inDateFormat;
+    }
+
     public static String readString() {
         try {
 

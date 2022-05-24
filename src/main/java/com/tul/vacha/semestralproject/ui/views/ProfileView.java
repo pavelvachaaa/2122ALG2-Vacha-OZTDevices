@@ -5,7 +5,6 @@
 package com.tul.vacha.semestralproject.ui.views;
 
 import com.tul.vacha.semestralproject.app.services.AuthService;
-import com.tul.vacha.semestralproject.app.core.navigation.Navigator;
 import com.tul.vacha.semestralproject.app.core.View;
 import com.tul.vacha.semestralproject.app.core.navigation.Menu;
 import com.tul.vacha.semestralproject.app.core.navigation.MenuItem;
@@ -13,11 +12,10 @@ import com.tul.vacha.semestralproject.app.dto.UserChangePasswordDTO;
 import com.tul.vacha.semestralproject.app.entities.User;
 import com.tul.vacha.semestralproject.utils.IOUtils;
 import com.tul.vacha.semestralproject.utils.MenuUtils;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -29,6 +27,9 @@ public class ProfileView extends View {
     private final ArrayList<MenuItem> menuItems = new ArrayList<>() {
         {
             add(new MenuItem("Změnit heslo", (d) -> changePassword()));
+            add(new MenuItem("Export dat", (d) -> exportData()));
+            add(new MenuItem("Přečtení dat", (d) -> readData()));
+
         }
     };
 
@@ -41,8 +42,52 @@ public class ProfileView extends View {
         System.out.println("=================");
         displayProfile();
 
-        MenuUtils.askForCommand(menu);
+        while (true) {
+            MenuUtils.askForCommand(menu);
+        }
 
+    }
+
+    private void exportData() {
+        while (true) {
+
+            System.out.println("Zadejte název souboru, do kterého chcete importovat:");
+            String filename = IOUtils.readLine();
+
+            try {
+                if (!filename.endsWith(".dat")) {
+                    filename += ".dat";
+                }
+                this.auth.exportData(filename);
+                this.showMessage("Úspěšně jsme uložili soubor");
+                return;
+            } catch (IOException ex) {
+                this.showMessage("Nastala chyba při práci se soubory, zkuste to znovu");
+            }
+
+        }
+    }
+
+    private void readData() {
+        while (true) {
+
+            System.out.println("Zadejte název souboru, ve kterém jsou uživatelská data");
+            String filename = IOUtils.readLine();
+
+            try {
+                if (!filename.endsWith(".dat")) {
+                    filename += ".dat";
+                }
+
+                String data = this.auth.readData(filename);
+                this.showMessage(data);
+
+                return;
+            } catch (IOException ex) {
+                this.showMessage("Nastala chyba při práci se soubory, zkuste to znovu");
+            }
+
+        }
     }
 
     private void changePassword() {
@@ -57,13 +102,13 @@ public class ProfileView extends View {
             // udělat z toho hvězdičky...
             auth.changePassword(new UserChangePasswordDTO(auth.getUser().getId(), password));
             IOUtils.clearConsole();
-            System.out.println("Úspěšně jsme Vám změnili heslo");
+            this.showMessage("Úspěšně jsme vám změnili heslo");
             this.display();
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            System.out.println("Nepodařilo se nám změnit heslo.");
+            this.showMessage("Nepodařilo se nám změnit heslo");
+
         } catch (NoSuchAlgorithmException ex) {
-            System.out.println("Někde nastala chyba.");
+            this.showMessage("Někde nastala chyba");
         }
 
     }

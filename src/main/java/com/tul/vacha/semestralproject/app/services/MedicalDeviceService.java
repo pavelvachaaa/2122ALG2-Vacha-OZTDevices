@@ -12,12 +12,15 @@ import com.tul.vacha.semestralproject.app.entities.MedicalDevice;
 import com.tul.vacha.semestralproject.app.enums.CodeList;
 import com.tul.vacha.semestralproject.app.repositories.implementation.InspectionRepository;
 import com.tul.vacha.semestralproject.app.repositories.implementation.MedicalDeviceRepository;
-import com.tul.vacha.semestralproject.app.repositories.interfaces.IMedicalDeviceRepository;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -62,6 +65,23 @@ public class MedicalDeviceService {
 
     public boolean delete(int id) throws SQLException {
         return repoMedical.deleteDevice(id) >= 1;
+    }
+
+    public void exportData(String filename) throws IOException, SQLException {
+        List<MedicalDevice> devices = this.getAll();
+
+        File dataDirectory = new File(System.getProperty("user.dir") + File.separator + "data");
+        File data = new File(dataDirectory, filename);
+
+        try ( PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(data, true)))) {
+            pw.println(String.format("%-5s %-20s %-50s %-10s",
+                    "ID", "IRN", "NAME", "CPV_DEVICE_TYPE"));
+            for (MedicalDevice device : devices) {
+                pw.println(device);
+            }
+            pw.close();
+        }
+
     }
 
 }

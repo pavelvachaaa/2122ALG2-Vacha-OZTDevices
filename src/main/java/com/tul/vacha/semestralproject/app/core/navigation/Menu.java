@@ -4,6 +4,7 @@
  */
 package com.tul.vacha.semestralproject.app.core.navigation;
 
+import com.tul.vacha.semestralproject.app.services.AuthService;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -16,7 +17,7 @@ public class Menu {
     private final boolean isCMD;
     private final ArrayList<MenuItem> menu;
     private final MenuItem back = new MenuItem("Zpět", "back", (d) -> Navigator.pop());
-    private final MenuItem help = new MenuItem("Nápověda", "help", (d) -> System.out.println(this.getInlineMenu()));
+    private final AuthService auth = AuthService.getInstance();
 
     public Menu() {
         this(new ArrayList<MenuItem>(), false, false);
@@ -36,15 +37,17 @@ public class Menu {
         if (showBackItem) {
             this.menu.add(back);
         }
-        if(isCMD) {
-            this.menu.add(help);
-        }
+
     }
 
     private String getMenuInRows() {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < menu.size(); i++) {
+            if (menu.get(i).isRestricted() && !auth.canAccess(true)) {
+                continue;
+            }
+
             sb.append(String.format("%d. %s\n", (i + 1), menu.get(i).getLabel()));
         }
 
@@ -56,7 +59,11 @@ public class Menu {
         StringBuilder sb = new StringBuilder();
         sb.append("Dostupné příkazy: ");
         for (int i = 0; i < menu.size(); i++) {
+            if (menu.get(i).isRestricted() && !auth.canAccess(true)) {
+                continue;
+            }
             sb.append(String.format("%s,", menu.get(i).getCommand()));
+
         }
 
         String inlineMenu = sb.toString();
@@ -71,12 +78,25 @@ public class Menu {
     }
 
     public MenuItem getItem(String command) {
-        return this.menu.stream().filter(i -> i.getCommand().toLowerCase().equals(command.toLowerCase())).findFirst().orElseThrow(() -> new NoSuchElementException("Tato položka v menu není"));
+
+        MenuItem item = this.menu.stream().filter(i -> i.getCommand().toLowerCase().equals(command.toLowerCase())).findFirst().orElseThrow(() -> new NoSuchElementException("Tato položka v menu není"));
+        if (item.isRestricted() && !auth.canAccess(true)) {
+            throw new IllegalStateException("Nejste oprávněn k tomu dělat tuto akci.");
+        }
+
+        return item;
+
     }
 
     public MenuItem getItem(int command) {
+
         if (command >= 0 && command < menu.size()) {
-            return menu.get(command);
+
+            MenuItem item = menu.get(command);
+            if (item.isRestricted() && !auth.canAccess(true)) {
+                throw new IllegalStateException("Nejste oprávněn k tomu dělat tuto akci.");
+            }
+            return item;
         }
 
         throw new NoSuchElementException("Tato položka v menu není");

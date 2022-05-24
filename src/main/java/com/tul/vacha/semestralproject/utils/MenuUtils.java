@@ -21,7 +21,7 @@ public final class MenuUtils {
 
     }
 
-    public static void askForCommand(Menu menu) {
+    public static boolean askForCommand(Menu menu) {
         boolean end = false;
         MenuItem item;
         while (!end) {
@@ -45,17 +45,15 @@ public final class MenuUtils {
                     item.execute(command);
 
                 }
-                end = true;
+                return true;
             } catch (InputMismatchException e) {
                 System.out.println("Zadali jste neplatný formát");
-            } catch (NoSuchElementException e) {
-                System.out.println(e.toString());
-            } catch (NumberFormatException e) {
+            } catch (NoSuchElementException | NumberFormatException | IllegalStateException e) {
                 System.out.println(e.getMessage());
             }
 
         }
-
+        return false;
     }
 
 }

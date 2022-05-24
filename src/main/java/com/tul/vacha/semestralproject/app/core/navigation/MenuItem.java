@@ -17,6 +17,13 @@ public class MenuItem<T> {
     private final Consumer<T> action;
     private final boolean restricted; // admin restrikce
 
+    public MenuItem(String label, String command, Consumer<T> action, boolean restricted) {
+        this.label = label;
+        this.command = command;
+        this.action = action;
+        this.restricted = restricted;
+    }
+
     public MenuItem(String label, Consumer<T> action, boolean restricted) {
         this(label, "", action, restricted);
 
@@ -36,13 +43,6 @@ public class MenuItem<T> {
 
     public boolean isRestricted() {
         return restricted;
-    }
-
-    public MenuItem(String label, String command, Consumer<T> action, boolean restricted) {
-        this.label = label;
-        this.command = command;
-        this.action = action;
-        this.restricted = restricted;
     }
 
     public void execute(T t) {

@@ -10,6 +10,14 @@ import com.tul.vacha.semestralproject.app.dto.UserRegisterDTO;
 import com.tul.vacha.semestralproject.app.repositories.implementation.UserRepository;
 import com.tul.vacha.semestralproject.app.entities.User;
 import com.tul.vacha.semestralproject.utils.AuthUtils;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
@@ -96,6 +104,56 @@ public class AuthService {
 
     public boolean changePassword(UserChangePasswordDTO data) throws SQLException, NoSuchAlgorithmException {
         return userRepository.changePassword(data);
+    }
+
+    public void exportData(String filename) throws IOException {
+
+        File dataDirectory = new File(System.getProperty("user.dir") + File.separator + "data");
+        File data = new File(dataDirectory, filename);
+
+        try ( DataOutputStream out = new DataOutputStream(new FileOutputStream(data, true))) {
+
+            out.writeInt(this.user.getId());
+            out.writeUTF(this.user.getName());
+            out.writeUTF(this.user.getPassword());
+            out.writeBoolean(this.user.getIsAdmin());
+            out.close();
+
+        }
+    }
+
+    public String readData(String filename) throws FileNotFoundException, IOException {
+        StringBuilder sb = new StringBuilder();
+
+        int id;
+        boolean isAdmin;
+        String name;
+        String password;
+
+        File dataDirectory = new File(System.getProperty("user.dir") + File.separator + "data");
+        File data = new File(dataDirectory, filename);
+
+        try ( DataInputStream in = new DataInputStream(new FileInputStream(data))) {
+            boolean end = false;
+            while (!end) {
+                try {
+                    id = in.readInt();
+                    name = in.readUTF();
+                    password = in.readUTF();
+                    isAdmin = in.readBoolean();
+
+                    sb.append(String.format("Data ze souboru: %d %s %s %s ", id, isAdmin ? "admin" : "uživatel", name, password));
+                    sb.append(System.lineSeparator());
+                } catch (EOFException e) {
+                    end = true;
+                }
+            }
+
+            in.close();
+
+        }
+
+        return sb.toString();
     }
 
     public void logout() {

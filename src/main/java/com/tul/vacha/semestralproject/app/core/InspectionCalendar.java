@@ -11,9 +11,10 @@ import java.time.ZoneId;
 import java.util.Date;
 
 // Vymyslet kam s tím
+// Vytvořeno ve škole
 /**
  *
- * @author pvacha
+ * @author school
  */
 public class InspectionCalendar {
 
@@ -23,9 +24,6 @@ public class InspectionCalendar {
     private final int createdDay;
     private final Month createdMonth;
     private final int createdYear;
-    //private static String[] daysInWeek = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-    //private static String[] months = {"", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-    //private int[] nDaysInMonth = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     private InspectionCalendar(int day, int month, int year) {
         checkDate(day, month, year);
