@@ -22,7 +22,8 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 /**
- * Vymyslet kam s tím
+ * Servisa, která se stará o aktuální stav přihlášeného uživatele. Je to
+ * singleton
  *
  * @author pvacha
  */
@@ -60,16 +61,22 @@ public class AuthService {
         return instance;
     }
 
+    public boolean delete(String username) throws SQLException {
+        return this.userRepository.delete(username);
+    }
+
     public User getUser() {
         return new User(this.user);
     }
 
     public boolean register(UserRegisterDTO data) throws SQLException, NoSuchAlgorithmException {
+        User dbUser = userRepository.getUserByUsername(data.getUsername());
 
-        // Najít uživatele kouknout jestli neexistuje
-        // Thrownout nějakou no nosuchelement. ...
-        userRepository.registerUser(data);
-        return true;
+        if (dbUser != null) {
+            throw new IllegalArgumentException("Uživatel s tímto jménem již existuje");
+        }
+
+        return userRepository.registerUser(data);
 
     }
 
@@ -83,7 +90,6 @@ public class AuthService {
 
     public boolean login(UserLoginDTO loginDTO) throws SQLException {
         User user = userRepository.getUserByUsername(loginDTO.getUsername());
-        System.out.println(user);
         if (user == null) {
             return false;
         }
@@ -106,6 +112,13 @@ public class AuthService {
         return userRepository.changePassword(data);
     }
 
+    /**
+     * Zapíše data do binárního souboru. Data jsou uložena v pracovní složce
+     * data
+     *
+     * @param filename - název souboru
+     * @throws IOException
+     */
     public void exportData(String filename) throws IOException {
 
         File dataDirectory = new File(System.getProperty("user.dir") + File.separator + "data");
@@ -122,6 +135,14 @@ public class AuthService {
         }
     }
 
+    /**
+     * Načte data z binárního souboru
+     *
+     * @param filename
+     * @return stringovou reprezentaci binárního souboru
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public String readData(String filename) throws FileNotFoundException, IOException {
         StringBuilder sb = new StringBuilder();
 

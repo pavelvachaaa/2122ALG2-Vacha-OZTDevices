@@ -37,6 +37,4 @@ public class InspectionService {
         return this.repo.markAsDone(idInspection);
     }
 
-    
-
 }

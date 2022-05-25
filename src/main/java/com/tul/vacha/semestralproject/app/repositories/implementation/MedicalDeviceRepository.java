@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
+ * Datová vrstva pro zdravotechnické předměty
  *
  * @author pvacha
  */
@@ -24,7 +25,7 @@ public class MedicalDeviceRepository implements IMedicalDeviceRepository {
 
     private final Database db;
 
-    public MedicalDeviceRepository() { // Předělat předávání závislostí...
+    public MedicalDeviceRepository() {
         Database db = null;
         try {
             db = Database.getInstance();
@@ -35,6 +36,12 @@ public class MedicalDeviceRepository implements IMedicalDeviceRepository {
         this.db = db;
     }
 
+    /**
+     * Vrací všechny řádky z tabulky.Na paginaci nezbyl rozpočet
+     *
+     * @return all rows from table
+     * @throws SQLException
+     */
     @Override
     public List<MedicalDevice> getAll() throws SQLException {
 

@@ -41,14 +41,14 @@ public class LoginView extends View {
 
             } catch (Exception e) {
                 IOUtils.clearConsole();
-                System.out.println("Neplatný vstup. Zkuste to znovu!");
+                this.showMessage("Neplatný vstup. Zkuste to znovu!");
             }
         }
 
         return new UserLoginDTO(username, password);
 
     }
-
+    
     private void login(UserLoginDTO loginDTO) {
 
         try {
@@ -71,5 +71,5 @@ public class LoginView extends View {
         }
 
     }
-
+    
 }

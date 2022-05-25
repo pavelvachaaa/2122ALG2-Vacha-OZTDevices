@@ -5,7 +5,9 @@
 package com.tul.vacha.semestralproject.utils.dbutils;
 
 /**
+ * Databázový wrapper
  *
+ * @version 1.0
  * @author pvacha
  */
 import java.sql.Connection;
@@ -16,16 +18,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 public class Database {
 
     private final List<Connection> availableConnections = new ArrayList<>();
     private final List<Connection> usedConnections = new ArrayList<>();
-    private final static int MAX_CONNECTIONS = 10;
-
+    private final static int MAX_CONNECTIONS = 15;
     private final String url;
     private final String user;
     private final String pass;

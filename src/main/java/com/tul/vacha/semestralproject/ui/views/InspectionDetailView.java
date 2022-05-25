@@ -19,10 +19,6 @@ import com.tul.vacha.semestralproject.utils.MenuUtils;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-// TODO: detail inspekce
-// TODO: Mark as done
-// TODO: Delete
-// TODO: GOback
 /**
  *
  * @author pvacha
@@ -67,8 +63,7 @@ public class InspectionDetailView extends View {
 
         System.out.println("Detail inspekce");
         System.out.println("=====================");
-        
-        
+
         try {
 
             MedicalDevice device = medicalService.getDevice(inspection.getIdDevice());
@@ -82,7 +77,7 @@ public class InspectionDetailView extends View {
             }
 
         } catch (SQLException ex) {
-            System.out.println("Někde nastala chyba opakujte pokus.");
+            this.showMessage("Někde nastala chyba, zkuste to znovu.");
         }
 
     }
@@ -94,7 +89,7 @@ public class InspectionDetailView extends View {
             this.showMessage("Úspěšně jsme odstranili tuto inspekci");
             Navigator.pop();
         } else {
-            System.out.println("Někde nastala chyba, zkuste to znovu.");
+            this.showMessage("Někde nastala chyba, zkuste to znovu.");
             this.display();
         }
     }
@@ -107,7 +102,7 @@ public class InspectionDetailView extends View {
             this.showMessage("Úspěšně jsme označili za hotovo tuto inspekci");
             Navigator.pop();
         } else {
-            System.out.println("Někde nastala chyba, zkuste to znovu.");
+            this.showMessage("Někde nastala chyba, zkuste to znovu.");
             this.display();
         }
     }

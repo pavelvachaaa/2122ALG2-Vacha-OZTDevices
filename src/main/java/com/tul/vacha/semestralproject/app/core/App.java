@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
- * Vymyslet kam to umístit
+ * Hlavní bod aplikace
  *
  * @author pvacha
  */

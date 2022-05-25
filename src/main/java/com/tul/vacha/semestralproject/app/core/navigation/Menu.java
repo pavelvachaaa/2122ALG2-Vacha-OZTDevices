@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 /**
+ * Třída, obstarávající menu i s autorizací
  *
  * @author pvacha
  */
@@ -17,6 +18,8 @@ public class Menu {
     private final boolean isCMD;
     private final ArrayList<MenuItem> menu;
     private final MenuItem back = new MenuItem("Zpět", "back", (d) -> Navigator.pop());
+
+    // Příjde mi, že je to příliš dependency coupled..
     private final AuthService auth = AuthService.getInstance();
 
     public Menu() {
@@ -31,6 +34,10 @@ public class Menu {
         this(menu, true, true);
     }
 
+    public boolean isIsCMD() {
+        return isCMD;
+    }
+
     public Menu(ArrayList<MenuItem> menu, boolean showBackItem, boolean isCMD) {
         this.menu = new ArrayList<>(menu);
         this.isCMD = isCMD;
@@ -40,6 +47,11 @@ public class Menu {
 
     }
 
+    /**
+     * Vytvoří menu v řádcích
+     *
+     * @return stringové menu, ve kterém se vybírá pomocí čísel
+     */
     private String getMenuInRows() {
         StringBuilder sb = new StringBuilder();
 
@@ -54,6 +66,11 @@ public class Menu {
         return sb.toString();
     }
 
+    /**
+     * Vytváří menu jako cmd
+     *
+     * @return stringovou reprezentaci menu, který vypadá jak cmd
+     */
     private String getInlineMenu() {
 
         StringBuilder sb = new StringBuilder();
@@ -70,6 +87,12 @@ public class Menu {
         return inlineMenu.substring(0, inlineMenu.length() - 1);
     }
 
+    /**
+     *  
+     * Stringová reprzentace menu
+     *
+     * @return Vrací jedno z meníček na základě příznaku
+     */
     public String getMenu() {
         if (menu.size() < 1) {
             return "";
@@ -100,10 +123,6 @@ public class Menu {
         }
 
         throw new NoSuchElementException("Tato položka v menu není");
-    }
-
-    public boolean isIsCMD() {
-        return isCMD;
     }
 
 }

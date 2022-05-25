@@ -32,7 +32,6 @@ public class InspectionCalendarService {
     private InspectionRepository repo;
 
     private ArrayList<Inspection> inspections;
-    private Map<Integer, Map<Integer, List<Integer>>> inspectionMap;
 
     public InspectionCalendarService() {
         try {
@@ -75,11 +74,17 @@ public class InspectionCalendarService {
         });
     }
 
+    /**
+     * Naparsuje command
+     *
+     * @param command
+     * @return na základě naparsovaného ID vrací inspekci
+     */
     public Inspection showCommand(String command) {
         command = command.replaceAll("\\s+", " ");
         String[] tokens = command.split(" ");
         if (tokens.length > 1 && !tokens[1].isBlank()) {
-            // Omezení na jednu inspekci na jeden den - mimo rozsah této práce už..
+            // Omezení na jednu inspekci na jeden den - nezbyl rozpočet
             Inspection insp;
             insp = inspections.stream().filter((ins) -> {
                 return ins.getLocalDate().getDayOfMonth() == Integer.parseInt(tokens[1]) && this.cal.getMonth().getMonthNumber() == ins.getLocalDate().getMonthValue();
@@ -93,6 +98,17 @@ public class InspectionCalendarService {
 
     }
 
+    /**
+     * Přidává do aktuálního kalendáře inspekci
+     *
+     * @param id
+     * @return zdali přidání bylo úspěšné
+     * @throws SQLException
+     */
+    public boolean addInspection(int id) throws SQLException {
+        return this.inspections.add(repo.getInspection(id));
+    }
+
     private String getHeaderOfMonth() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("%s %d", cal.getMonth().toString().toUpperCase(), cal.getYear()));
@@ -104,7 +120,7 @@ public class InspectionCalendarService {
         return sb.toString();
     }
 
-    private ArrayList<Integer> getDaysWhereInspection(int year, int month) {
+    private ArrayList<Integer> getDaysWhereInspection() {
         LocalDate inspDate;
 
         ArrayList<Integer> days = new ArrayList<>();
@@ -125,7 +141,7 @@ public class InspectionCalendarService {
         int startAt = cal.getDayInWeekForFirst();
         StringBuilder sb = new StringBuilder();
         sb.append("   ".repeat(startAt));
-        ArrayList<Integer> days = getDaysWhereInspection(cal.getYear(), cal.getMonth().getMonthNumber());
+        ArrayList<Integer> days = getDaysWhereInspection();
 
         for (int i = 0, dayOfMonth = 1; dayOfMonth <= cal.getMonth().getDaysInMonth(); i++) {
             for (int j = ((i == 0) ? startAt : 0); j < 7 && (dayOfMonth <= cal.getMonth().getDaysInMonth()); j++) {
@@ -143,15 +159,25 @@ public class InspectionCalendarService {
         return sb.toString();
     }
 
+    /**
+     * Stringová reprezentace kalendáře
+     *
+     * @return stringovou reprezentaci kalendáře
+     */
     public String getCalendarString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getHeaderOfMonth());
         sb.append(System.getProperty("line.separator"));
         sb.append(this.getBodyOfCalendar());
-        //sb.append(System.getProperty("line.separator"));
         return sb.toString();
     }
 
+    /**
+     * Načte do kalendáře data ze souboru ve správným formátu
+     *
+     * @param filename
+     * @throws IOException
+     */
     public void addInspectionsFromFile(String filename) throws IOException {
         File dataDirectory = new File(System.getProperty("user.dir") + File.separator + "data");
         File data = new File(dataDirectory, filename);
@@ -185,10 +211,6 @@ public class InspectionCalendarService {
             throw new ErrorLinesException("Nebyla načtena data na řádcích: " + errorLines.toString());
         }
 
-    }
-
-    public boolean addInspection(int id) throws SQLException {
-        return this.inspections.add(repo.getInspection(id));
     }
 
 }

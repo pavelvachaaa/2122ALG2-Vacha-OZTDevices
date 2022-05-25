@@ -10,9 +10,9 @@ package com.tul.vacha.semestralproject.app.dto;
  */
 public class UserRegisterDTO {
 
-    private String name;
-    private String username;
-    private String password;
+    private final String name;
+    private final String username;
+    private final String password;
 
     public UserRegisterDTO(String name, String username, String password) {
         this.name = name;

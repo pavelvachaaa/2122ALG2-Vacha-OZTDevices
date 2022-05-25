@@ -4,7 +4,6 @@
  */
 package com.tul.vacha.semestralproject.ui.views;
 
-import com.tul.vacha.semestralproject.app.services.AuthService;
 import com.tul.vacha.semestralproject.app.enums.CodeList;
 import com.tul.vacha.semestralproject.app.core.navigation.Navigator;
 import com.tul.vacha.semestralproject.app.core.View;
@@ -13,7 +12,6 @@ import com.tul.vacha.semestralproject.app.core.navigation.MenuItem;
 import com.tul.vacha.semestralproject.app.dto.MedicalItemAddDTO;
 import com.tul.vacha.semestralproject.app.entities.CodeListItem;
 import com.tul.vacha.semestralproject.app.entities.MedicalDevice;
-import com.tul.vacha.semestralproject.app.repositories.implementation.MedicalDeviceRepository;
 import com.tul.vacha.semestralproject.app.services.MedicalDeviceService;
 import com.tul.vacha.semestralproject.utils.CommonUtils;
 import com.tul.vacha.semestralproject.utils.IOUtils;
@@ -21,6 +19,7 @@ import com.tul.vacha.semestralproject.utils.MenuUtils;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,8 +31,6 @@ import java.util.NoSuchElementException;
  */
 public class MedicalItemListView extends View {
 
-    private final MedicalDeviceRepository repo = new MedicalDeviceRepository();
-    private final AuthService auth = AuthService.getInstance();
     private final MedicalDeviceService service = new MedicalDeviceService();
     private List<MedicalDevice> devices = new ArrayList<>();
 
@@ -76,10 +73,13 @@ public class MedicalItemListView extends View {
     public void display() {
         IOUtils.clearConsole();
         try {
-            devices = repo.getAll();
+            devices = service.getAll();
+            Collections.sort(devices); // Sortování zde, abychs splnil požadavky.. Jinak by to bylo na straně DB
             displayItems();
 
             while (true) {
+                
+                System.out.println("Některé příkazy vyžadují parametr jako číslo (show, add, delete, ...)");
                 MenuUtils.askForCommand(menu);
             }
 

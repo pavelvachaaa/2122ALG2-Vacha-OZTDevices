@@ -17,7 +17,9 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 /**
+ * Obstarává standartí výstup a output pro aplikaci
  *
+ * @version 1.0
  * @author pvacha
  */
 public final class IOUtils {
@@ -47,6 +49,10 @@ public final class IOUtils {
 
     public static SimpleDateFormat getInDateFormat() {
         return inDateFormat;
+    }
+
+    public static String getFormattedDate(Date d) {
+        return outDateFormat.format(d);
     }
 
     public static String readString() {
@@ -95,6 +101,12 @@ public final class IOUtils {
 
     }
 
+    /**
+     * "Otevře" dialog s ano, ne
+     *
+     * @param prompt
+     * @return true if it was yes, false otherwise
+     */
     public static boolean askForYesNo(String prompt) {
         final String[] yesOption = {"a", "ano", "y", "yes"};
         final String[] noOption = {"n", "ne", "no"};
@@ -111,6 +123,12 @@ public final class IOUtils {
         }
     }
 
+    /**
+     * Na základě simpledateformatu se zeptá na datum
+     *
+     * @param prompt
+     * @return date
+     */
     public static Date askForDate(String prompt) {
         String cindate;
         while (true) {
@@ -174,10 +192,6 @@ public final class IOUtils {
 
     }
 
-    public static String getFormattedDate(Date d) {
-        return outDateFormat.format(d);
-    }
-
     // Když se InputUtils incializují
     static {
         resync();
@@ -195,16 +209,4 @@ public final class IOUtils {
         IOUtils.sc.useLocale(LOCALE);
     }
 
-    /*  public static void main(String[] args) {
-        System.out.println("Číslo:");
-        int x = readInt();
-
-        System.out.println("Stringeríno:");
-        String test = readString();
-
-        Date d = IOUtils.askForDate("Zadejte datum: ");
-
-        System.out.println(getFormattedDate(d));
-    }
-     */
 }

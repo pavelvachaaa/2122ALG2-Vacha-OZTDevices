@@ -16,7 +16,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -40,6 +39,13 @@ public class MedicalDeviceService {
         }
     }
 
+    /**
+     * Zdravotnické zařízení a jeho inspekce
+     *
+     * @param id
+     * @return vrací celý zdrav. item a inspekce
+     * @throws SQLException
+     */
     public MedicalItemDTO getDeviceDetail(int id) throws SQLException {
         MedicalDevice device = this.getDevice(id);
         ArrayList<Inspection> inspections = repoInspection.getDeviceInspections(id);
@@ -67,6 +73,14 @@ public class MedicalDeviceService {
         return repoMedical.deleteDevice(id) >= 1;
     }
 
+    /**
+     * Exportuje veškerá data ze zdravotechniky. Vloží header a poté řádky z
+     * databáze a oddělí je mezerami
+     *
+     * @param filename
+     * @throws IOException
+     * @throws SQLException
+     */
     public void exportData(String filename) throws IOException, SQLException {
         List<MedicalDevice> devices = this.getAll();
 

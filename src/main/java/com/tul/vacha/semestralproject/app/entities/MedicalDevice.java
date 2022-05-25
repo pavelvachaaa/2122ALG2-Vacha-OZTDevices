@@ -12,7 +12,7 @@ import java.time.ZoneId;
  *
  * @author pvacha
  */
-public class MedicalDevice {
+public class MedicalDevice implements Comparable<MedicalDevice> {
 
     private int id;
 
@@ -145,6 +145,11 @@ public class MedicalDevice {
     public String toString() {
         return String.format("%-5s %-20s %-50s %-10s\n", this.id, this.internalRegistrationNumber, this.name, this.cpvDeviceType);
 
+    }
+
+    @Override
+    public int compareTo(MedicalDevice o) {
+        return this.name.compareTo(o.name);
     }
 
 }

@@ -9,11 +9,11 @@ import com.tul.vacha.semestralproject.app.entities.Inspection;
 import com.tul.vacha.semestralproject.app.repositories.interfaces.IInspectionRepository;
 import com.tul.vacha.semestralproject.utils.dbutils.Database;
 import com.tul.vacha.semestralproject.utils.dbutils.ResultSetPropertiesSimplifyHelps;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
+ * Datová vrstva pro inspekce
  *
  * @author pvacha
  */
@@ -49,7 +49,6 @@ public class InspectionRepository implements IInspectionRepository {
     @Override
     public boolean markAsDone(int inspectionId) throws SQLException {
         int result = db.queryExec("UPDATE ozt_device_inspection SET isDone = 1 WHERE id = ?", new Object[]{inspectionId});
-        // +Výjimka atd...
         return result >= 1;
     }
 

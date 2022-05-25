@@ -1,0 +1,3 @@
+ID    IRN                  NAME                                               CPV_DEVICE_TYPE
+4     X-2321011            Dýchací zařízení                                   Radiodiagnostické doplňky (33124210-0)
+

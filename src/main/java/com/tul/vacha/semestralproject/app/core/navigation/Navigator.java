@@ -11,17 +11,23 @@ import java.util.NoSuchElementException;
 import java.util.Stack;
 
 /**
- * Vymyslet kam to umístit Třída, co se stará o veškeré routování v aplikaci
+ * Třída, která se stará o "routování" v aplikaci
  *
  * @author pvacha
  */
 public final class Navigator {
 
+    // Zásobník, který si ukládá aktuální pohledy
     private static final Stack<View> stack = new Stack<>();
 
     private Navigator() {
     }
 
+    /**
+     * Vezme string, podívá se do mapy s cestama a podle toho ji zobrazí
+     *
+     * @param route
+     */
     public static void pushNamed(String route) {
         try {
             push(App.getView(route));
@@ -30,15 +36,31 @@ public final class Navigator {
         }
     }
 
+    /**
+     * Pop
+     *
+     * @return vrací true, když se může uživatel ještě vrátit, false otherwises
+     */
     public static boolean canPop() {
         return stack.size() > 1;
     }
 
+    /**
+     * Například přechod z loginu na mainmenu Vymaže, ze zásobníku všechny cesty
+     * a zobrazí požadovanou -> nelze se vrátit
+     *
+     * @param route
+     */
     public static void pushReplacementNamed(String route) {
         stack.clear();
         pushNamed(route);
     }
 
+    /**
+     * Pushne libovolný view, který dědí z View
+     *
+     * @param view
+     */
     public static void push(View view) {
         stack.push(view);
         view.display();
@@ -49,6 +71,9 @@ public final class Navigator {
         push(view);
     }
 
+    /**
+     * Pokusí se vrátít o jeden pohled zpět
+     */
     public static void pop() {
         // Možná to hodit příznakově
         IOUtils.clearConsole();
@@ -61,5 +86,4 @@ public final class Navigator {
         }
     }
 
-   
 }

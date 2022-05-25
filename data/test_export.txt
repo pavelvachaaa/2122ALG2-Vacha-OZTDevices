@@ -1,0 +1,7 @@
+ID    IRN                  NAME                                               CPV_DEVICE_TYPE
+1     RI123123             Rentgen - Intraorální                              Dopplerův ultrazvuk (33112310-4)
+
+2     TB658110             Termograf - bezkontaktní                           Zdravotnické sady33141620-2 (33141620-2)
+
+3     PV12547              Plicní ventilátor - nouzový                        Diagnostické systémy (33124110-9)
+

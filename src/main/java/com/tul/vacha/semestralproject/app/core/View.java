@@ -5,7 +5,7 @@
 package com.tul.vacha.semestralproject.app.core;
 
 /**
- * Vymyslet kam to umístit
+ * Abstraktní třída pro UI aplikace
  *
  * @author pvacha
  */

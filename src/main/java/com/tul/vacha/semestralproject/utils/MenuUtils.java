@@ -6,13 +6,11 @@ package com.tul.vacha.semestralproject.utils;
 
 import com.tul.vacha.semestralproject.app.core.navigation.Menu;
 import com.tul.vacha.semestralproject.app.core.navigation.MenuItem;
-import com.tul.vacha.semestralproject.app.services.AuthService;
-import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 
 /**
- *
+ * 
  * @author pvacha
  */
 public final class MenuUtils {

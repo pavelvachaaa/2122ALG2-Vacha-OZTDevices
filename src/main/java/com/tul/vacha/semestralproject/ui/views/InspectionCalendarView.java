@@ -56,7 +56,8 @@ public class InspectionCalendarView extends View {
         while (true) {
             IOUtils.clearConsole();
             System.out.println(this.service.getCalendarString());
-
+            
+            System.out.println("Některé příkazy vyžadují parametr jako číslo (show, add, delete, ...)");
             MenuUtils.askForCommand(menu);
 
         }

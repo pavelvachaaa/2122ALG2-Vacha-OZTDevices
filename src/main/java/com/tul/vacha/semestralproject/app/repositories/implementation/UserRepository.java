@@ -12,11 +12,11 @@ import com.tul.vacha.semestralproject.utils.AuthUtils;
 import com.tul.vacha.semestralproject.utils.dbutils.Database;
 import com.tul.vacha.semestralproject.utils.dbutils.ResultSetPropertiesSimplifyHelps;
 import java.security.NoSuchAlgorithmException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
+ * Datová vrstva pro uživatele
  *
  * @author pvacha
  */
@@ -28,6 +28,13 @@ public class UserRepository implements IUserRepository {
         this.db = Database.getInstance();
     }
 
+    /**
+     * Vrací uživatele
+     *
+     * @param id
+     * @return user, null otherwise
+     * @throws SQLException
+     */
     @Override
     public User getUserById(int id) throws SQLException {
         ArrayList<User> users = ResultSetPropertiesSimplifyHelps.putResult(db.query("SELECT * FROM users WHERE id = ?", new Object[]{id}), User.class);
@@ -39,6 +46,13 @@ public class UserRepository implements IUserRepository {
         return users.get(0);
     }
 
+    /**
+     * Vrací uživatele
+     *
+     * @param username
+     * @return user if found null otherwise
+     * @throws SQLException
+     */
     @Override
     public User getUserByUsername(String username) throws SQLException {
 
@@ -49,16 +63,6 @@ public class UserRepository implements IUserRepository {
         }
 
         return users.get(0);
-    }
-
-    @Override
-    public void addUser() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void deleteUser() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
@@ -74,16 +78,19 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public boolean changePassword(UserChangePasswordDTO user) throws SQLException, NoSuchAlgorithmException {
-        long result = db.queryExec("UPDATE users SET password = ? WHERE id = ? ", new Object[]{AuthUtils.getHash(user.getPassword()), user.getId()});
-        // +Výjimka atd...
+        int result = db.queryExec("UPDATE users SET password = ? WHERE id = ? ", new Object[]{AuthUtils.getHash(user.getPassword()), user.getId()});
         return result >= 1;
     }
 
     @Override
     public boolean registerUser(UserRegisterDTO user) throws SQLException, NoSuchAlgorithmException {
-        long result = db.queryExec("INSERT INTO users (name, username, password) VALUES (?,?,?)", new Object[]{user.getName(), user.getUsername(), AuthUtils.getHash(user.getPassword())});
-        // +Výjimky atd...
+        int result = db.queryExec("INSERT INTO users (name, username, password) VALUES (?,?,?)", new Object[]{user.getName(), user.getUsername(), AuthUtils.getHash(user.getPassword())});
         return result >= 1;
+    }
+
+    @Override
+    public boolean delete(String username) throws SQLException {
+        return db.queryExec("DELETE FROM users WHERE username = ?", new Object[]{username}) >= 1;
     }
 
 }

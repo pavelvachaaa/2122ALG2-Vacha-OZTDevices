@@ -5,13 +5,13 @@
 package com.tul.vacha.semestralproject.app.core;
 
 import com.tul.vacha.semestralproject.app.enums.Month;
-import com.tul.vacha.semestralproject.app.enums.WeekDays;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
 // Vymyslet kam s tím
 // Vytvořeno ve škole
+// Lehce upraveno pro mé účely
 /**
  *
  * @author school

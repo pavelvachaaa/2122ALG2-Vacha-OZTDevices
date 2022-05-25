@@ -97,16 +97,19 @@ public class ProfileView extends View {
         System.out.println("Nové heslo znovu: ");
         String passwordConfirm = IOUtils.readString();
 
+        if (!password.equals(passwordConfirm)) {
+            System.out.println("Hesla se neshodují");
+            return;
+        }
+
         try {
-            // Repeat until ty dvě hesla nejsou stejné
-            // udělat z toho hvězdičky...
+
             auth.changePassword(new UserChangePasswordDTO(auth.getUser().getId(), password));
             IOUtils.clearConsole();
             this.showMessage("Úspěšně jsme vám změnili heslo");
             this.display();
         } catch (SQLException ex) {
             this.showMessage("Nepodařilo se nám změnit heslo");
-
         } catch (NoSuchAlgorithmException ex) {
             this.showMessage("Někde nastala chyba");
         }

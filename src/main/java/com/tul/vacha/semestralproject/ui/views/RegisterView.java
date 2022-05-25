@@ -11,7 +11,7 @@ import com.tul.vacha.semestralproject.app.services.AuthService;
 import com.tul.vacha.semestralproject.utils.IOUtils;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-   
+
 /**
  *
  * @author pvacha
@@ -44,7 +44,7 @@ public class RegisterView extends View {
 
             } catch (Exception e) {
                 IOUtils.clearConsole();
-                System.out.println("Neplatný vstup. Zkuste to znovu!");
+                this.showMessage("Neplatná vstup. Zkuste to znovu!");
             }
         }
 
@@ -52,6 +52,11 @@ public class RegisterView extends View {
 
     }
 
+    /**
+     * Provede registraci a zárověň přihlásí
+     *
+     * @param registerDTO
+     */
     private void register(UserRegisterDTO registerDTO) {
 
         try {
@@ -63,20 +68,19 @@ public class RegisterView extends View {
                 IOUtils.clearConsole();
                 this.showMessage("Chybně zadané údaje, šéfe!");
 
-                display();
+                this.display();
             }
         } catch (SQLException e) {
 
             IOUtils.clearConsole();
             System.out.println("Někde nastala chyba. Opakujte váš pokus!");
 
-            display();
+            this.display();
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("Nepodporovaný algoritmus");
+            this.showMessage("Nepodporovaný algoritmus");
         } catch (IllegalArgumentException e) {
-            System.out.println("Uživatel s tímto heslem již existuje.");
-            // Repeat until asi???
-            // Nebo clearnout a displayout znova register
+            this.showMessage(e.getMessage());
+            this.display();
         }
 
     }

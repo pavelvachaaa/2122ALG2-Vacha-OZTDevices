@@ -21,16 +21,12 @@ public interface IUserRepository {
 
     User getUserByUsername(String username) throws SQLException;
 
-    //  User getAllUsers();
-    void addUser() throws SQLException;
-
     ArrayList getUsers() throws SQLException;
 
     boolean changePassword(UserChangePasswordDTO user) throws SQLException, NoSuchAlgorithmException;
 
     boolean registerUser(UserRegisterDTO user) throws SQLException, NoSuchAlgorithmException;
 
-    void deleteUser() throws SQLException;
+    boolean delete(String username) throws SQLException;
 
-    //void export();
 }

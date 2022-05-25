@@ -5,7 +5,7 @@
 package com.tul.vacha.semestralproject.app.enums;
 
 /**
- *
+ * Standartizované  číselníky
  * @author pvacha
  */
 public enum CodeList {
